@@ -1,0 +1,27 @@
+.footer {
+  border-top: 1px solid #E3E3E3;
+  background-color: #F7F7F7;
+}
+.container{
+  height: 140px;
+  margin: 0 auto;
+  max-width: 1110px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.links {
+  display: flex;
+  align-items: center;
+  column-gap: 30px;
+}
+
+.reference {
+  font-size: 16px;
+  line-height: 150%;
+  font-weight: 400;
+  color: #838E9E;
+  &_gray {
+    font-weight: 500;
+  }
+}
