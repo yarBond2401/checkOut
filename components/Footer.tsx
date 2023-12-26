@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from './Footer.module.scss';
+import styles from '../styles/Footer.module.scss';
 import Link from 'next/link';
 
 const Footer: React.FC = () => {
