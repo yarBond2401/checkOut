@@ -1,3 +1,5 @@
+import { PaymentMethodEnum } from "./PaymentMethodEnum";
+
 export interface IForm {
   firstName: string;
   lastName: string;
@@ -8,4 +10,7 @@ export interface IForm {
   cardNumber: string;
   expiration: string;
   cvv: string;
+  method: PaymentMethodEnum;
+  isAgree: boolean;
+  isSubscribe: boolean;
 }

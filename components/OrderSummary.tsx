@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from '../styles/payment.module.scss';
+import styles from '../styles/main.module.scss';
 import Image from 'next/image';
 import Link from 'next/link';
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from '../styles/payment.module.scss';
+import styles from '../styles/main.module.scss';
 import CustomInput from './CustomInput';
 import { PaymentMethodEnum } from '@/models/PaymentMethodEnum';
 import Image from 'next/image';
@@ -11,14 +11,16 @@ const EMAIL_REG_EXP = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\
 
 interface PaymentProps {
   register: UseFormRegister<IForm>;
-  formState: FormState<IForm>;
   setPaymentMethod: React.Dispatch<React.SetStateAction<PaymentMethodEnum>>;
   paymentMethod: PaymentMethodEnum;
   control: Control<IForm, any>;
+  isAgree: boolean;
+  isSubscribe: boolean;
+  setSubscribe: React.Dispatch<React.SetStateAction<boolean>>;
+  setAgree: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Payment: React.FC<PaymentProps> = ({ register, formState, setPaymentMethod, paymentMethod, control }) => {
-  const { errors } = formState;
+const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMethod, control, isAgree, isSubscribe, setAgree, setSubscribe }) => {
   const watchedEmailInput = useWatch({ control, name: 'email' });
   const watchedNameInput = useWatch({ control, name: 'firstName' });
   const watchedLastNameInput = useWatch({ control, name: 'lastName' });
@@ -30,24 +32,16 @@ const Payment: React.FC<PaymentProps> = ({ register, formState, setPaymentMethod
       <h3 className={styles.subtitle}>Contact Information</h3>
       <div className={styles.payment__inputs}>
         <div className={styles.payment__inputsRow}>
-          <CustomInput register={register} errors={errors} isRequired={true} label="First Name" id="firstName" placeholder="First Name" />
-          <CustomInput register={register} errors={errors} isRequired={true} label="Last Name" id="lastName" placeholder="Last Name" />
+          <CustomInput register={register} isRequired={true} label="First Name" id="firstName" placeholder="First Name" />
+          <CustomInput register={register} isRequired={true} label="Last Name" id="lastName" placeholder="Last Name" />
         </div>
-        <CustomInput
-          regularExpression={EMAIL_REG_EXP}
-          register={register}
-          errors={errors}
-          isRequired={true}
-          label="Contact Email"
-          id="email"
-          placeholder="Contact Email"
-        />
+        <CustomInput regularExpression={EMAIL_REG_EXP} register={register} isRequired={true} label="Contact Email" id="email" placeholder="Contact Email" />
         {watchedNameInput && watchedLastNameInput && EMAIL_REG_EXP.test(watchedEmailInput) && (
           <>
-            <CustomInput register={register} errors={errors} isRequired={true} label="Confirm Email" id="confirmEmail" placeholder="Confirm Email" />
+            <CustomInput register={register} isRequired={true} label="Confirm Email" id="confirmEmail" placeholder="Confirm Email" />
             <div className={styles.payment__inputsRow}>
-              <CustomInput register={register} errors={errors} isRequired={true} label="Country/Region" id="country" placeholder="Choose Country" />
-              <CustomInput register={register} errors={errors} isRequired={true} label="Phone Number" id="phoneNumber" placeholder="Your Phone Number" />
+              <CustomInput register={register} isRequired={true} label="Country/Region" id="country" placeholder="Choose Country" />
+              <CustomInput register={register} isRequired={true} label="Phone Number" id="phoneNumber" placeholder="Your Phone Number" />
             </div>
           </>
         )}
@@ -80,20 +74,20 @@ const Payment: React.FC<PaymentProps> = ({ register, formState, setPaymentMethod
                 <Image width={35} height={25} src="/assets/payment/Visa.svg" alt="Visa" />
               </div>
               <div className={styles.row__card}>
-                <Image width={35} height={25} src="/assets/payment/JCB.svg" alt="JCB" />
+                <Image width={35} height={25} src="/assets/payment/amex.svg" alt="American Express" />
               </div>
               <div className={styles.row__card}>
-                <Image width={35} height={25} src="/assets/payment/GooglePay.svg" alt="Google Pay" />
+                <Image width={35} height={25} src="/assets/payment/discover.svg" alt="Google Pay" />
               </div>
             </div>
           </div>
           <div className={styles.payText}>Pay with your Credit Card via Stripe</div>
           <div className={clsx(styles.payment__inputs, styles.payment__inputs_bottom)}>
-            <CustomInput register={register} errors={errors} isRequired={false} label="Card Number" id="cardNumber" placeholder="1234 5678 9101 1121" />
+            <CustomInput register={register} isRequired={false} label="Card Number" id="cardNumber" placeholder="1234 5678 9101 1121" />
             <div style={{ marginBottom: 16 }}></div>
             <div className={styles.payment__inputsRow}>
-              <CustomInput register={register} errors={errors} isRequired={false} label="Expiration Date" id="expiration" placeholder="MM/YY" />
-              <CustomInput register={register} errors={errors} isRequired={false} label="CVV" id="cvv" placeholder="123" />
+              <CustomInput register={register} isRequired={false} label="Expiration Date" id="expiration" placeholder="MM/YY" />
+              <CustomInput register={register} isRequired={false} label="CVV" id="cvv" placeholder="123" />
             </div>
           </div>
         </div>
@@ -118,7 +112,7 @@ const Payment: React.FC<PaymentProps> = ({ register, formState, setPaymentMethod
       <div className={styles.agreement}>
         <div className={styles.agreement__item}>
           <div className={styles.agreement__checkbox}>
-            <input type="checkbox" />
+            <input checked={isAgree} onChange={(e) => setAgree(!isAgree)} type="checkbox" />
           </div>
           <div className={styles.agreement__text}>
             I Agree With <span className={styles.agreement__highlighted}>Terms & Conditions</span> and{' '}
@@ -127,7 +121,7 @@ const Payment: React.FC<PaymentProps> = ({ register, formState, setPaymentMethod
         </div>
         <div className={styles.agreement__item}>
           <div className={styles.agreement__checkbox}>
-            <input type="checkbox" />
+            <input checked={isSubscribe} onChange={(e) => setSubscribe(!isSubscribe)} type="checkbox" />
           </div>
           <div className={styles.agreement__text}>Get free tips and discount code for us.</div>
         </div>

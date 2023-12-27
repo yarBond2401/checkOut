@@ -1,7 +1,7 @@
 import { IForm } from '@/models/IForm';
 import React from 'react';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
-import styles from '../styles/payment.module.scss';
+import styles from '../styles/main.module.scss';
 import clsx from 'clsx';
 
 interface CustomInputProps {
@@ -10,7 +10,6 @@ interface CustomInputProps {
   placeholder: string;
   isRequired: boolean;
   register: UseFormRegister<IForm>;
-  errors: FieldErrors<IForm>;
   regularExpression?: RegExp | null;
 }
 const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isRequired, register, regularExpression = null }) => {

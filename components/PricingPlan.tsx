@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/payment.module.scss';
+import styles from '../styles/main.module.scss';
 import { PricingPlanEnum } from '@/models/PricingPlanEnum';
 import clsx from 'clsx';
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
