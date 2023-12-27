@@ -11,9 +11,12 @@ interface CustomInputProps {
   isRequired: boolean;
   register: UseFormRegister<IForm>;
   errors: FieldErrors<IForm>;
+  regularExpression?: RegExp | null;
 }
-const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isRequired, register, errors }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isRequired, register, regularExpression = null }) => {
   const fieldIsRequired = 'Field Is Required *';
+
+  
 
   return (
     <div className={clsx(styles.input, { [styles.input__mb26]: isRequired })}>
@@ -21,13 +24,20 @@ const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isReq
         {label}
       </label>
       <input
-        {...register(id, {
-          required: fieldIsRequired,
-          // pattern: {
-          //   value: /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/,
-          //   message: 'Please, enter valid email',
-          // },
-        })}
+        {...register(
+          id,
+          regularExpression
+          ? {
+              required: fieldIsRequired,
+              pattern: {
+                value: regularExpression,
+                message: `Please, enter valid ${label}`,
+              },
+            }
+          : {
+              required: fieldIsRequired,
+            }
+        )}
         className={styles.input__item}
         id={id}
         type="text"

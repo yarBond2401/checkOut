@@ -4,17 +4,25 @@ import CustomInput from './CustomInput';
 import { PaymentMethodEnum } from '@/models/PaymentMethodEnum';
 import Image from 'next/image';
 import clsx from 'clsx';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { Control, FormState, UseFormRegister, useWatch } from 'react-hook-form';
 import { IForm } from '@/models/IForm';
+
+const EMAIL_REG_EXP = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
 
 interface PaymentProps {
   register: UseFormRegister<IForm>;
-  errors: FieldErrors<IForm>;
+  formState: FormState<IForm>;
   setPaymentMethod: React.Dispatch<React.SetStateAction<PaymentMethodEnum>>;
   paymentMethod: PaymentMethodEnum;
+  control: Control<IForm, any>;
 }
 
-const Payment: React.FC<PaymentProps> = ({ register, errors, setPaymentMethod, paymentMethod }) => {
+const Payment: React.FC<PaymentProps> = ({ register, formState, setPaymentMethod, paymentMethod, control }) => {
+  const { errors } = formState;
+  const watchedEmailInput = useWatch({ control, name: 'email' });
+  const watchedNameInput = useWatch({ control, name: 'firstName' });
+  const watchedLastNameInput = useWatch({ control, name: 'lastName' });
+
   return (
     <div className={styles.payment}>
       <h2 className={styles.title}>Payment</h2>
@@ -25,12 +33,25 @@ const Payment: React.FC<PaymentProps> = ({ register, errors, setPaymentMethod, p
           <CustomInput register={register} errors={errors} isRequired={true} label="First Name" id="firstName" placeholder="First Name" />
           <CustomInput register={register} errors={errors} isRequired={true} label="Last Name" id="lastName" placeholder="Last Name" />
         </div>
-        <CustomInput register={register} errors={errors} isRequired={true} label="Contact Email" id="email" placeholder="Contact Email" />
-        {/* <CustomInput register={register} errors={errors} isRequired={true} label="Confirm Email" id="confirmEmail" placeholder="Confirm Email" />
-        <div className={styles.payment__inputsRow}>
-          <CustomInput register={register} errors={errors} isRequired={true} label="Country/Region" id="country" placeholder="Choose Country" />
-          <CustomInput register={register} errors={errors} isRequired={true} label="Phone Number" id="phoneNumber" placeholder="Your Phone Number" />
-        </div> */}
+        <CustomInput
+          regularExpression={EMAIL_REG_EXP}
+          register={register}
+          errors={errors}
+          isRequired={true}
+          label="Contact Email"
+          id="email"
+          placeholder="Contact Email"
+        />
+        {watchedNameInput && watchedLastNameInput && EMAIL_REG_EXP.test(watchedEmailInput) && (
+          <>
+            <CustomInput register={register} errors={errors} isRequired={true} label="Confirm Email" id="confirmEmail" placeholder="Confirm Email" />
+            <div className={styles.payment__inputsRow}>
+              <CustomInput register={register} errors={errors} isRequired={true} label="Country/Region" id="country" placeholder="Choose Country" />
+              <CustomInput register={register} errors={errors} isRequired={true} label="Phone Number" id="phoneNumber" placeholder="Your Phone Number" />
+            </div>
+          </>
+        )}
+        {!EMAIL_REG_EXP.test(watchedEmailInput) && watchedEmailInput && <div className={styles.error}>Invalid Email Address</div>}
       </div>
       <h3 className={styles.subtitle}>Choose payment method</h3>
       <div className={styles.payment__variants}>
