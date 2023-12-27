@@ -449,6 +449,11 @@ $poppins-font: 'Poppins', sans-serif;
     font-size: 24px;
     line-height: 133.3%;
   }
+  .input {
+    &__mb26 {
+      margin-bottom: 26px;
+    }
+  }
 }
 @media (max-width: 400px) {
   .discount__button {

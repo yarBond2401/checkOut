@@ -1,8 +1,8 @@
-import { IForm } from "@/models/IForm";
-import React from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { IForm } from '@/models/IForm';
+import React from 'react';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import styles from '../styles/payment.module.scss';
-import clsx from "clsx";
+import clsx from 'clsx';
 
 interface CustomInputProps {
   label: string;
@@ -16,7 +16,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isReq
   const fieldIsRequired = 'Field Is Required *';
 
   return (
-    <div className={styles.input}>
+    <div className={clsx(styles.input, { [styles.input__mb26]: isRequired })}>
       <label className={clsx(styles.input__label, { [styles.input__label_noReq]: !isRequired })} htmlFor={id}>
         {label}
       </label>
@@ -28,7 +28,6 @@ const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isReq
           //   message: 'Please, enter valid email',
           // },
         })}
-        // helperText={errors.email?.message}
         className={styles.input__item}
         id={id}
         type="text"

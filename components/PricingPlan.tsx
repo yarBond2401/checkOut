@@ -28,8 +28,8 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ pricingPlan, setPricingPlan, 
     if (value > 160 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return;
     if (isNaN(value)) return;
 
-    // if (value < 10 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return;
-    // if (value < 1 && pricingPlan === PricingPlanEnum.MONTHLY) return;
+    if (value < 10 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return;
+    if (value < 1 && pricingPlan === PricingPlanEnum.MONTHLY) return;
 
     if (value > 160 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return;
     if (value > 12 && pricingPlan === PricingPlanEnum.MONTHLY) return;
@@ -38,10 +38,10 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ pricingPlan, setPricingPlan, 
 
   const handleSetOrderVariant = (variant: PricingPlanEnum) => {
     if (variant === PricingPlanEnum.PAY_AS_GO) {
-      setHours(60);
+      setHours(10);
       setPricingPlan(PricingPlanEnum.PAY_AS_GO);
     } else {
-      setHours(2);
+      setHours(1);
       setPricingPlan(PricingPlanEnum.MONTHLY);
     }
   };

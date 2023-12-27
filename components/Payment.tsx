@@ -22,15 +22,15 @@ const Payment: React.FC<PaymentProps> = ({ register, errors, setPaymentMethod, p
       <h3 className={styles.subtitle}>Contact Information</h3>
       <div className={styles.payment__inputs}>
         <div className={styles.payment__inputsRow}>
-          <CustomInput register={register} errors={errors} isRequired={true} label="Last Name" id="firstName" placeholder="First Name" />
+          <CustomInput register={register} errors={errors} isRequired={true} label="First Name" id="firstName" placeholder="First Name" />
           <CustomInput register={register} errors={errors} isRequired={true} label="Last Name" id="lastName" placeholder="Last Name" />
         </div>
         <CustomInput register={register} errors={errors} isRequired={true} label="Contact Email" id="email" placeholder="Contact Email" />
-        <CustomInput register={register} errors={errors} isRequired={true} label="Confirm Email" id="confirmEmail" placeholder="Confirm Email" />
+        {/* <CustomInput register={register} errors={errors} isRequired={true} label="Confirm Email" id="confirmEmail" placeholder="Confirm Email" />
         <div className={styles.payment__inputsRow}>
           <CustomInput register={register} errors={errors} isRequired={true} label="Country/Region" id="country" placeholder="Choose Country" />
           <CustomInput register={register} errors={errors} isRequired={true} label="Phone Number" id="phoneNumber" placeholder="Your Phone Number" />
-        </div>
+        </div> */}
       </div>
       <h3 className={styles.subtitle}>Choose payment method</h3>
       <div className={styles.payment__variants}>

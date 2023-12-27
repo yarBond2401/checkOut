@@ -13,9 +13,9 @@ import Payment from '@/components/Payment';
 const HomePage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodEnum>(PaymentMethodEnum.CREDIT_CARD);
   const [pricingPlan, setPricingPlan] = useState<PricingPlanEnum>(PricingPlanEnum.PAY_AS_GO);
-  const [hours, setHours] = useState<number>(60);
+  const [hours, setHours] = useState<number>(10);
   const [discountCode, setDiscountCode] = useState<string>('');
-  // const [windowWidth, setWindowWidth] = useState<any>();
+  const [windowWidth, setWindowWidth] = useState<any>(window.innerWidth);
 
   const {
     register,
@@ -27,20 +27,20 @@ const HomePage: React.FC = () => {
     console.log('formData', data);
   };
 
-  // const handleResize = () => {
-  //   setWindowWidth(window.innerWidth);
-  // };
-  // useEffect(() => {
-  //   window.addEventListener('resize', handleResize);
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize);
-  //   };
-  // }, [window.innerWidth]);
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [window.innerWidth]);
 
   return (
     <section className={styles.section}>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.container}>
-        {window.innerWidth > 768 ? (
+        {windowWidth > 768 ? (
           <>
             <Payment register={register} errors={errors} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
             <div className={styles.summary}>
