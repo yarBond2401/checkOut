@@ -1,5 +1,6 @@
 import React from 'react';
-import styles from '../styles/Footer.module.scss';
+import styles from '../styles/footer.module.scss';
+import Link from 'next/link';
 
 const Footer: React.FC = () => {
   return (
@@ -20,7 +21,11 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className={styles.reference}>
-          Powered by <span className={styles.reference_gray}>Stripe | Terms Privacy</span>
+          Powered by{' '}
+          <span className={styles.reference_gray}>
+            Stripe | <Link style={{padding: '0 5px'}} target='_blank' href={'https://eleganttechbd.com/terms-and-conditions/'}>Terms</Link>
+            <Link style={{padding: '0 5px'}} target='_blank' href={'https://eleganttechbd.com/privacy-policy/'}>Privacy</Link>
+          </span>
         </div>
       </div>
     </footer>

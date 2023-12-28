@@ -6,6 +6,7 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import { Control, FormState, UseFormRegister, useWatch } from 'react-hook-form';
 import { IForm } from '@/models/IForm';
+import Link from 'next/link';
 
 const EMAIL_REG_EXP = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
 
@@ -24,6 +25,7 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
   const watchedEmailInput = useWatch({ control, name: 'email' });
   const watchedNameInput = useWatch({ control, name: 'firstName' });
   const watchedLastNameInput = useWatch({ control, name: 'lastName' });
+  const watchedConfirmEmailInput = useWatch({ control, name: 'confirmEmail' });
 
   return (
     <div className={styles.payment}>
@@ -39,6 +41,9 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
         {watchedNameInput && watchedLastNameInput && EMAIL_REG_EXP.test(watchedEmailInput) && (
           <>
             <CustomInput register={register} isRequired={true} label="Confirm Email" id="confirmEmail" placeholder="Confirm Email" />
+            {watchedConfirmEmailInput && watchedEmailInput && watchedConfirmEmailInput !== watchedEmailInput && (
+              <div className={styles.mismatch}>Email Adress Is Not Matched</div>
+            )}
             <div className={styles.payment__inputsRow}>
               <CustomInput register={register} isRequired={true} label="Country/Region" id="country" placeholder="Choose Country" />
               <CustomInput register={register} isRequired={true} label="Phone Number" id="phoneNumber" placeholder="Your Phone Number" />
@@ -116,18 +121,26 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
       <div className={styles.agreement}>
         <div className={styles.agreement__item}>
           <div className={styles.agreement__checkbox}>
-            <input checked={isAgree} onChange={(e) => setAgree(!isAgree)} type="checkbox" />
+            <input id="agreement" style={{ width: 16, height: 16 }} checked={isAgree} onChange={(e) => setAgree(!isAgree)} type="checkbox" />
           </div>
-          <div className={styles.agreement__text}>
-            I Agree With <span className={styles.agreement__highlighted}>Terms & Conditions</span> and{' '}
-            <span className={styles.agreement__highlighted}>Privacy Policy.</span>
-          </div>
+          <label htmlFor="agreement" className={styles.agreement__text}>
+            I Agree With{' '}
+            <Link target="_blank" href={'https://eleganttechbd.com/terms-and-conditions/'} className={styles.agreement__highlighted}>
+              Terms & Conditions
+            </Link>{' '}
+            and{' '}
+            <Link target="_blank" href={'https://eleganttechbd.com/privacy-policy/'} className={styles.agreement__highlighted}>
+              Privacy Policy.
+            </Link>
+          </label>
         </div>
         <div className={styles.agreement__item}>
           <div className={styles.agreement__checkbox}>
-            <input checked={isSubscribe} onChange={(e) => setSubscribe(!isSubscribe)} type="checkbox" />
+            <input id="subscribe" style={{ width: 16, height: 16 }} checked={isSubscribe} onChange={(e) => setSubscribe(!isSubscribe)} type="checkbox" />
           </div>
-          <div className={styles.agreement__text}>Get free tips and discount code for us.</div>
+          <label htmlFor="subscribe" className={styles.agreement__text}>
+            Get free tips and discount code for us.
+          </label>
         </div>
       </div>
     </div>

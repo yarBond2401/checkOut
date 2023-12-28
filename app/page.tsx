@@ -12,6 +12,7 @@ import OrderSummary from '@/components/OrderSummary';
 import Payment from '@/components/Payment';
 import Snackbar from '@/components/Snackbar';
 import clsx from 'clsx';
+import Popup from '@/components/Popup';
 
 const HomePage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodEnum>(PaymentMethodEnum.CREDIT_CARD);
@@ -21,6 +22,7 @@ const HomePage: React.FC = () => {
   const [windowWidth, setWindowWidth] = useState<any>();
   const [isAgree, setAgree] = useState<boolean>(false);
   const [isSubscribe, setSubscribe] = useState<boolean>(false);
+  const [isPopup, setPopup] = useState<boolean>(false);
 
   const {
     register,
@@ -46,6 +48,7 @@ const HomePage: React.FC = () => {
 
   return (
     <section className={styles.section}>
+      {isPopup && <Popup setPopup={setPopup} />}
       <div className={clsx(styles.container, { [styles.container__error]: Object.keys(errors).length > 0 })}>
         {Object.keys(errors).length > 0 && <Snackbar isAgree={isAgree} paymentMethod={paymentMethod} control={control} errors={errors} />}
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>

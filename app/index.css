@@ -59,3 +59,11 @@ body {
 .main {
   flex: 1 1 auto;
 }
+*::selection {
+  background-color: #7e0662;
+  color: #fff;
+}
+*::-moz-selection {
+  background-color: #7e0662;
+  color: #fff;
+}
