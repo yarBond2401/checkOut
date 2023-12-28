@@ -29,10 +29,11 @@ const HomePage: React.FC = () => {
     handleSubmit,
     formState: { errors },
     control,
+    setValue
   } = useForm<IForm>({});
 
   const onSubmit: SubmitHandler<IForm> = async (data) => {
-    console.log('control', control);
+    console.log('data', data);
   };
 
   const handleResize = () => {
@@ -55,6 +56,7 @@ const HomePage: React.FC = () => {
           {windowWidth > 768 && (
             <>
               <Payment
+                setValue={setValue}
                 isAgree={isAgree}
                 isSubscribe={isSubscribe}
                 setSubscribe={setSubscribe}
@@ -82,6 +84,7 @@ const HomePage: React.FC = () => {
                   <div className={styles.divider}></div>
                   <PricingPlan pricingPlan={pricingPlan} setPricingPlan={setPricingPlan} hours={hours} setHours={setHours} />
                   <Payment
+                    setValue={setValue}
                     isAgree={isAgree}
                     isSubscribe={isSubscribe}
                     setSubscribe={setSubscribe}

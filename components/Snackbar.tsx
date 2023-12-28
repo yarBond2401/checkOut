@@ -13,18 +13,25 @@ interface SnackbarProps {
 }
 
 const Snackbar: React.FC<SnackbarProps> = ({ errors, isAgree, paymentMethod }) => {
+  console.log('errrors', errors);
   const getSnackbarText = () => {
-    if (!(paymentMethod === PaymentMethodEnum.PAYPAL) && (errors.cardNumber || errors.expiration || errors.cvv)) {
-      return ['Card Payment Details Are Missing. Please Fill In All Required Fields.'];
+    if (paymentMethod === PaymentMethodEnum.CREDIT_CARD && (errors.cardNumber || errors.cvv || errors.email)) {
+      return ['Unfortunately, Your Credit Card Details Are Not Valid.'];
     }
-    if (paymentMethod === PaymentMethodEnum.PAYPAL && (errors.email || errors.confirmEmail || errors.phoneNumber)) {
+    if (paymentMethod === PaymentMethodEnum.PAYPAL && (errors.firstName || errors.lastName || errors.email)) {
       return [
-        'Billing Email Address Is Not A Valid Email Address.',
+        errors.firstName?.message,
+        errors.lastName?.message,
+        errors.email?.message,
         'Billing Confirm Email Is A Required Field.',
         'Billing Phone Is A Required Field.',
         !isAgree ? 'Please Read And Accept The Terms And Conditions To Proceed With Your Order.' : null,
       ];
     }
+    if (paymentMethod === PaymentMethodEnum.CREDIT_CARD && !(errors.cardNumber || errors.cvv || errors.email) && !isAgree) {
+      return ['Please Read And Accept The Terms And Conditions To Proceed With Your Order.'];
+    }
+
     return ['Some error has happened'];
   };
   return (

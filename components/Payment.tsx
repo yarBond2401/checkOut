@@ -1,12 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '../styles/main.module.scss';
 import CustomInput from './CustomInput';
 import { PaymentMethodEnum } from '@/models/PaymentMethodEnum';
 import Image from 'next/image';
 import clsx from 'clsx';
-import { Control, FormState, UseFormRegister, useWatch } from 'react-hook-form';
+import { Control, Controller, FormState, UseFormRegister, UseFormSetValue, useForm, useWatch } from 'react-hook-form';
 import { IForm } from '@/models/IForm';
 import Link from 'next/link';
+import CardInput from './CardDataInput';
+
+import { number } from 'card-validator';
+import { CardNumberVerification } from 'card-validator/dist/card-number';
+import { cvv } from 'card-validator';
+import { Verification } from 'card-validator/dist/types';
+import { expirationDate, expirationMonth, expirationYear } from 'card-validator';
+import { ExpirationDateVerification } from 'card-validator/dist/expiration-date';
+import { ExpirationMonthVerification } from 'card-validator/dist/expiration-month';
+import { ExpirationYearVerification } from 'card-validator/dist/expiration-year';
 
 const EMAIL_REG_EXP = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
 
@@ -19,13 +29,40 @@ interface PaymentProps {
   isSubscribe: boolean;
   setSubscribe: React.Dispatch<React.SetStateAction<boolean>>;
   setAgree: React.Dispatch<React.SetStateAction<boolean>>;
+  setValue: UseFormSetValue<IForm>;
 }
 
-const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMethod, control, isAgree, isSubscribe, setAgree, setSubscribe }) => {
+const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMethod, control, isAgree, isSubscribe, setAgree, setSubscribe, setValue }) => {
   const watchedEmailInput = useWatch({ control, name: 'email' });
   const watchedNameInput = useWatch({ control, name: 'firstName' });
   const watchedLastNameInput = useWatch({ control, name: 'lastName' });
   const watchedConfirmEmailInput = useWatch({ control, name: 'confirmEmail' });
+  /* ============================================================================================================================= */
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedCardNumber = e.target.value
+      .replace(/\D/g, '')
+      .replace(/(\d{4})/g, '$1 ')
+      .slice(0, 19)
+      .trim();
+
+    setValue('cardNumber', formattedCardNumber);
+  };
+
+  const handleCVVChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('cvv', e.target.value.replace(/\D/g, '').slice(0, 4));
+  };
+
+  const handleExpirationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value.replace(/\D/g, ''); // Удаление всех символов, кроме цифр
+    if (inputValue[0] === '0' || inputValue[0] === '1') {
+      const formattedValue = inputValue.substring(0, 2) + (inputValue.length > 2 ? '/' : '') + inputValue.replace(/\//g, '').substring(2, 4);
+      setValue('expiration', formattedValue);
+    } else {
+      const formattedValue =
+        (inputValue.length === 1 ? '0' : '') + inputValue.substring(0, 1) + (inputValue.length > 2 ? '/' : '') + inputValue.replace(/\//g, '').substring(2, 4);
+      setValue('expiration', formattedValue);
+    }
+  };
 
   return (
     <div className={styles.payment}>
@@ -34,19 +71,62 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
       <h3 className={styles.subtitle}>Contact Information</h3>
       <div className={styles.payment__inputs}>
         <div className={styles.payment__inputsRow}>
-          <CustomInput register={register} isRequired={true} label="First Name" id="firstName" placeholder="First Name" />
-          <CustomInput register={register} isRequired={true} label="Last Name" id="lastName" placeholder="Last Name" />
+          <CustomInput
+            errorMessage="Billing First Name Is A Required Field."
+            register={register}
+            isRequired={true}
+            label="First Name"
+            id="firstName"
+            placeholder="First Name"
+          />
+          <CustomInput
+            errorMessage="Billing Last Name Is A Required Field."
+            register={register}
+            isRequired={true}
+            label="Last Name"
+            id="lastName"
+            placeholder="Last Name"
+          />
         </div>
-        <CustomInput regularExpression={EMAIL_REG_EXP} register={register} isRequired={true} label="Contact Email" id="email" placeholder="Contact Email" />
+        <CustomInput
+          errorMessage="Billing Email Address Is A Required Field"
+          regularExpression={EMAIL_REG_EXP}
+          register={register}
+          isRequired={true}
+          label="Contact Email"
+          id="email"
+          placeholder="Contact Email"
+        />
         {watchedNameInput && watchedLastNameInput && EMAIL_REG_EXP.test(watchedEmailInput) && (
           <>
-            <CustomInput register={register} isRequired={true} label="Confirm Email" id="confirmEmail" placeholder="Confirm Email" />
+            <CustomInput
+              errorMessage="Billing Confirm Email Is A Required Field."
+              register={register}
+              isRequired={true}
+              label="Confirm Email"
+              id="confirmEmail"
+              placeholder="Confirm Email"
+            />
             {watchedConfirmEmailInput && watchedEmailInput && watchedConfirmEmailInput !== watchedEmailInput && (
               <div className={styles.mismatch}>Email Adress Is Not Matched</div>
             )}
             <div className={styles.payment__inputsRow}>
-              <CustomInput register={register} isRequired={true} label="Country/Region" id="country" placeholder="Choose Country" />
-              <CustomInput register={register} isRequired={true} label="Phone Number" id="phoneNumber" placeholder="Your Phone Number" />
+              <CustomInput
+                errorMessage="Please Read And Accept The Terms And Conditions To Proceed With Your Order."
+                register={register}
+                isRequired={true}
+                label="Country/Region"
+                id="country"
+                placeholder="Choose Country"
+              />
+              <CustomInput
+                errorMessage="Billing Phone Is A Required Field."
+                register={register}
+                isRequired={true}
+                label="Phone Number"
+                id="phoneNumber"
+                placeholder="Your Phone Number"
+              />
             </div>
           </>
         )}
@@ -90,11 +170,76 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
             <>
               <div className={styles.payText}>Pay with your Credit Card via Stripe</div>
               <div className={clsx(styles.payment__inputs, styles.payment__inputs_bottom)}>
-                <CustomInput register={register} isRequired={false} label="Card Number" id="cardNumber" placeholder="1234 5678 9101 1121" />
+                <Controller
+                  rules={{
+                    required: 'Card Number is required',
+                    validate: (value) => {
+                      const cardNumberValidator: CardNumberVerification = number(value);
+                      if ((value && !cardNumberValidator.isPotentiallyValid) || !cardNumberValidator.isValid) {
+                        return 'Invalid Card Number';
+                      }
+                      return true;
+                    },
+                  }}
+                  name="cardNumber"
+                  control={control}
+                  defaultValue={''}
+                  render={({ field }) => (
+                    <CardInput
+                      isRequired={false}
+                      label="Card Number"
+                      id="cardNumber"
+                      placeholder="1234 5678 9101 1121"
+                      field={field}
+                      hangleChange={handleCardNumberChange}
+                    />
+                  )}
+                />
                 <div style={{ marginBottom: 16 }}></div>
                 <div className={styles.payment__inputsRow}>
-                  <CustomInput register={register} isRequired={false} label="Expiration Date" id="expiration" placeholder="MM/YY" />
-                  <CustomInput register={register} isRequired={false} label="CVV" id="cvv" placeholder="123" />
+                  <Controller
+                    rules={{
+                      required: 'Expiration is required',
+                      validate: (value) => {
+                        const epirationDate: ExpirationDateVerification = expirationDate(value);
+                        // const epirationMonth: ExpirationMonthVerification = expirationMonth(value);
+                        // const epirationYear: ExpirationYearVerification = expirationYear(value);
+                        if ((value && !epirationDate.isPotentiallyValid) || !epirationDate.isValid) {
+                          return 'Invalid Expiration';
+                        }
+                        return true;
+                      },
+                    }}
+                    name="expiration"
+                    control={control}
+                    defaultValue={''}
+                    render={({ field }) => (
+                      <CardInput
+                        isRequired={false}
+                        label="Expiration Date"
+                        id="expiration"
+                        placeholder="MM/YY"
+                        field={field}
+                        hangleChange={handleExpirationChange}
+                      />
+                    )}
+                  />
+                  <Controller
+                    rules={{
+                      required: 'CVV is required',
+                      validate: (value) => {
+                        const CVCverify: Verification = cvv(value);
+                        if ((value && !CVCverify.isPotentiallyValid) || !CVCverify.isValid) {
+                          return 'Invalid CVV';
+                        }
+                        return true;
+                      },
+                    }}
+                    name="cvv"
+                    control={control}
+                    defaultValue={''}
+                    render={({ field }) => <CardInput isRequired={false} label="CVV" id="cvv" placeholder="123" field={field} hangleChange={handleCVVChange} />}
+                  />
                 </div>
               </div>
             </>
