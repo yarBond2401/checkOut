@@ -81,15 +81,19 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
               </div>
             </div>
           </div>
-          <div className={styles.payText}>Pay with your Credit Card via Stripe</div>
-          <div className={clsx(styles.payment__inputs, styles.payment__inputs_bottom)}>
-            <CustomInput register={register} isRequired={false} label="Card Number" id="cardNumber" placeholder="1234 5678 9101 1121" />
-            <div style={{ marginBottom: 16 }}></div>
-            <div className={styles.payment__inputsRow}>
-              <CustomInput register={register} isRequired={false} label="Expiration Date" id="expiration" placeholder="MM/YY" />
-              <CustomInput register={register} isRequired={false} label="CVV" id="cvv" placeholder="123" />
-            </div>
-          </div>
+          {paymentMethod === PaymentMethodEnum.CREDIT_CARD && (
+            <>
+              <div className={styles.payText}>Pay with your Credit Card via Stripe</div>
+              <div className={clsx(styles.payment__inputs, styles.payment__inputs_bottom)}>
+                <CustomInput register={register} isRequired={false} label="Card Number" id="cardNumber" placeholder="1234 5678 9101 1121" />
+                <div style={{ marginBottom: 16 }}></div>
+                <div className={styles.payment__inputsRow}>
+                  <CustomInput register={register} isRequired={false} label="Expiration Date" id="expiration" placeholder="MM/YY" />
+                  <CustomInput register={register} isRequired={false} label="CVV" id="cvv" placeholder="123" />
+                </div>
+              </div>
+            </>
+          )}
         </div>
         <div onClick={() => setPaymentMethod(PaymentMethodEnum.PAYPAL)} className={styles.payment__variant}>
           <div className={styles.paypalRow}>

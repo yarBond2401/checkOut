@@ -404,9 +404,6 @@ $poppins-font: 'Poppins', sans-serif;
   font-size: 14px;
 }
 .snackbar {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 200%;
   display: flex;
   column-gap: 10px;
@@ -416,6 +413,7 @@ $poppins-font: 'Poppins', sans-serif;
   border-top: 2px solid #b81c23;
 
   &__icon {
+    align-self: flex-start;
     & svg {
       color: #b81c23;
     }
@@ -430,9 +428,6 @@ $poppins-font: 'Poppins', sans-serif;
       margin-bottom: 10px;
     }
   }
-}
-.form__error {
-  padding-top: 30px;
 }
 /* ============================================================================================================================= */
 @media (max-width: 767.98px) {
