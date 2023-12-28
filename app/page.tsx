@@ -37,21 +37,19 @@ const HomePage: React.FC = () => {
     setWindowWidth(window.innerWidth);
   };
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', handleResize);
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-    }
-  }, [window.innerWidth]);
+    setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
-  if (typeof window === 'undefined') null;
   return (
     <section className={styles.section}>
       <div className={clsx(styles.container, { [styles.container__error]: Object.keys(errors).length > 0 })}>
         {Object.keys(errors).length > 0 && <Snackbar isAgree={isAgree} paymentMethod={paymentMethod} control={control} errors={errors} />}
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-          {window.innerWidth > 768 || windowWidth > 768 ? (
+          {windowWidth > 768 && (
             <>
               <Payment
                 isAgree={isAgree}
@@ -72,7 +70,8 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
             </>
-          ) : (
+          )}
+          {windowWidth <= 768 && (
             <>
               <div className={styles.summary}>
                 <div className={styles.summary__content}>

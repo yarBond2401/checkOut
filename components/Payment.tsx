@@ -109,7 +109,7 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
                 </svg>
               )}
             </button>
-            <Image width={66} height={17} src="/assets/payment/Paypal.svg" alt="PayPal" />
+            <Image width={66} height={17} src="/assets/payment/PayPal.svg" alt="PayPal" />
           </div>
         </div>
       </div>
