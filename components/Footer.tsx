@@ -8,16 +8,16 @@ const Footer: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.links}>
           <div>
-            <img src="/assets/footer/01.png" alt="Company Logotype" />
+            <img src="/assets/footer/01.svg" alt="Company Logotype" />
           </div>
           <div>
-            <img src="/assets/footer/02.png" alt="Company Logotype" />
+            <img src="/assets/footer/02.svg" alt="Company Logotype" />
           </div>
           <div>
-            <img src="/assets/footer/03.png" alt="Company Logotype" />
+            <img src="/assets/footer/03.svg" alt="Company Logotype" />
           </div>
           <div>
-            <img src="/assets/footer/04.png" alt="Company Logotype" />
+            <img src="/assets/footer/04.svg" alt="Company Logotype" />
           </div>
         </div>
         <div className={styles.reference}>
