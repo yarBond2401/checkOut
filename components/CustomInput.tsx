@@ -12,8 +12,9 @@ interface CustomInputProps {
   register: UseFormRegister<IForm>;
   regularExpression?: RegExp | null;
   errorMessage: string;
+  type?: string;
 }
-const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isRequired, register, regularExpression = null, errorMessage }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isRequired, register, regularExpression = null, errorMessage, type = 'text' }) => {
 
   return (
     <div className={clsx(styles.input, { [styles.input__mb26]: isRequired })}>
@@ -37,8 +38,9 @@ const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isReq
         )}
         className={styles.input__item}
         id={id}
-        type="text"
+        type={type}
         placeholder={placeholder}
+        min={type === 'number' ? '0' : 'none'}
       />
     </div>
   );

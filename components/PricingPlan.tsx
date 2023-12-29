@@ -28,12 +28,16 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ pricingPlan, setPricingPlan, 
     if (value > 160 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return;
     if (isNaN(value)) return;
 
-    if (value < 10 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return;
-    if (value < 1 && pricingPlan === PricingPlanEnum.MONTHLY) return;
-
     if (value > 160 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return;
     if (value > 12 && pricingPlan === PricingPlanEnum.MONTHLY) return;
     setHours(value);
+  };
+
+  const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+
+    if (value < 10 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return setHours(10);
+    if (value < 1 && pricingPlan === PricingPlanEnum.MONTHLY) return setHours(1);
   };
 
   const handleSetOrderVariant = (variant: PricingPlanEnum) => {
@@ -100,7 +104,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ pricingPlan, setPricingPlan, 
             <button type="button" onClick={decreaseNum} className={styles.hours__minusButton}>
               <AiOutlineMinus />
             </button>
-            <input type="text" value={hours} onChange={(e) => handleHoursChange(e)} className={styles.hours__input} />
+            <input type="text" value={hours} onBlur={handleBlur} onChange={(e) => handleHoursChange(e)} className={styles.hours__input} />
             <button onClick={increaseNum} type="button" className={styles.hours__plusButton}>
               <AiOutlinePlus />
             </button>

@@ -23,16 +23,25 @@ const HomePage: React.FC = () => {
   const [isAgree, setAgree] = useState<boolean>(false);
   const [isSubscribe, setSubscribe] = useState<boolean>(false);
   const [isPopup, setPopup] = useState<boolean>(false);
+  const [isShowSnackbar, setShowSnackbar] = useState<boolean>(false);
+  const [submitClick, setSubmitClick] = useState<number>(0);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     control,
-    setValue
+    setValue,
+    setError,
   } = useForm<IForm>({});
 
   const onSubmit: SubmitHandler<IForm> = async (data) => {
+    setSubmitClick(Date.now());
+    if (!isAgree) return setShowSnackbar(true);
+    if (data.confirmEmail !== data.email) return setError('confirmEmail', { message: 'Email Adress Is Not Matched' });
+    if (isAgree) setShowSnackbar(false);
+
+    setPopup(true);
     console.log('data', data);
   };
 
@@ -50,8 +59,10 @@ const HomePage: React.FC = () => {
   return (
     <section className={styles.section}>
       {isPopup && <Popup setPopup={setPopup} />}
-      <div className={clsx(styles.container, { [styles.container__error]: Object.keys(errors).length > 0 })}>
-        {Object.keys(errors).length > 0 && <Snackbar isAgree={isAgree} paymentMethod={paymentMethod} control={control} errors={errors} />}
+      <div className={clsx(styles.container, { [styles.container__error]: Object.keys(errors).length > 0 || isShowSnackbar })}>
+        {(isShowSnackbar || Object.keys(errors).length > 0) && (
+          <Snackbar submitClick={submitClick} isAgree={isAgree} paymentMethod={paymentMethod} control={control} errors={errors} />
+        )}
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           {windowWidth > 768 && (
             <>

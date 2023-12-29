@@ -18,7 +18,7 @@ const Popup: React.FC<PopupProps> = ({ setPopup }) => {
         <div className={styles.body}>
           <div className={styles.check}>
             <svg xmlns="http://www.w3.org/2000/svg" width="44" height="45" viewBox="0 0 44 45" fill="none">
-              <path d="M36.3996 13.5L16.5997 33.2999L7.59949 24.3" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M36.3996 13.5L16.5997 33.2999L7.59949 24.3" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
           <div className={styles.thankText}>Thank You For Your Order</div>

@@ -42,7 +42,7 @@ button {
   color: inherit;
   background-color: transparent;
 }
-input {
+input, select {
   outline: none;
 }
 body {
@@ -66,4 +66,7 @@ body {
 *::-moz-selection {
   background-color: #7e0662;
   color: #fff;
+}
+input[type="checkbox"] {
+  cursor: pointer;
 }

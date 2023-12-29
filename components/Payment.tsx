@@ -4,7 +4,7 @@ import CustomInput from './CustomInput';
 import { PaymentMethodEnum } from '@/models/PaymentMethodEnum';
 import Image from 'next/image';
 import clsx from 'clsx';
-import { Control, Controller, FormState, UseFormRegister, UseFormSetValue, useForm, useWatch } from 'react-hook-form';
+import { Control, Controller, FormState, UseFormRegister, UseFormSetError, UseFormSetValue, useForm, useWatch } from 'react-hook-form';
 import { IForm } from '@/models/IForm';
 import Link from 'next/link';
 import CardInput from './CardDataInput';
@@ -17,8 +17,8 @@ import { expirationDate, expirationMonth, expirationYear } from 'card-validator'
 import { ExpirationDateVerification } from 'card-validator/dist/expiration-date';
 import { ExpirationMonthVerification } from 'card-validator/dist/expiration-month';
 import { ExpirationYearVerification } from 'card-validator/dist/expiration-year';
-
-const EMAIL_REG_EXP = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
+import { countries } from '@/constants/countries';
+import { EMAIL_REG_EXP } from '@/constants/emailRegularExp';
 
 interface PaymentProps {
   register: UseFormRegister<IForm>;
@@ -55,7 +55,7 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
   const handleExpirationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value.replace(/\D/g, ''); // Удаление всех символов, кроме цифр
     if (inputValue[0] === '0' || inputValue[0] === '1') {
-      const formattedValue = inputValue.substring(0, 2) + (inputValue.length > 2 ? '/' : '') + inputValue.replace(/\//g, '').substring(2, 4);
+      const formattedValue = inputValue.substring(0, 2) + (inputValue.length > 2 ? ' / ' : '') + inputValue.replace(/\//g, '').substring(2, 4);
       setValue('expiration', formattedValue);
     } else {
       const formattedValue =
@@ -111,15 +111,27 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
               <div className={styles.mismatch}>Email Adress Is Not Matched</div>
             )}
             <div className={styles.payment__inputsRow}>
+              <div className={styles.input}>
+                <label className={styles.input__label} htmlFor="country">
+                  Country/Region
+                </label>
+                <select
+                  defaultValue={'United States (US)'}
+                  {...register('country', { required: 'Please, select a country' })}
+                  className={styles.input__item}
+                  name="countries"
+                  id="country"
+                >
+                  {countries.map((el) => (
+                    <option key={el} value={el}>
+                      {el}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <CustomInput
-                errorMessage="Please Read And Accept The Terms And Conditions To Proceed With Your Order."
-                register={register}
-                isRequired={true}
-                label="Country/Region"
-                id="country"
-                placeholder="Choose Country"
-              />
-              <CustomInput
+                type="number"
                 errorMessage="Billing Phone Is A Required Field."
                 register={register}
                 isRequired={true}
@@ -174,8 +186,9 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
                   rules={{
                     required: 'Card Number is required',
                     validate: (value) => {
-                      const cardNumberValidator: CardNumberVerification = number(value);
-                      if ((value && !cardNumberValidator.isPotentiallyValid) || !cardNumberValidator.isValid) {
+                      const newValue = value.replace(/\s/g, '');
+                      const cardNumberValidator: CardNumberVerification = number(newValue);
+                      if ((newValue && !cardNumberValidator.isPotentiallyValid) || !cardNumberValidator.isValid) {
                         return 'Invalid Card Number';
                       }
                       return true;
@@ -201,10 +214,11 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
                     rules={{
                       required: 'Expiration is required',
                       validate: (value) => {
-                        const epirationDate: ExpirationDateVerification = expirationDate(value);
-                        // const epirationMonth: ExpirationMonthVerification = expirationMonth(value);
-                        // const epirationYear: ExpirationYearVerification = expirationYear(value);
-                        if ((value && !epirationDate.isPotentiallyValid) || !epirationDate.isValid) {
+                        const newValue = value.replace(/\s/g, '');
+                        const epirationDate: ExpirationDateVerification = expirationDate(newValue);
+                        // const epirationMonth: ExpirationMonthVerification = expirationMonth(newValue);
+                        // const epirationYear: ExpirationYearVerification = expirationYear(newValue);
+                        if ((newValue && !epirationDate.isPotentiallyValid) || !epirationDate.isValid) {
                           return 'Invalid Expiration';
                         }
                         return true;
@@ -266,7 +280,7 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
       <div className={styles.agreement}>
         <div className={styles.agreement__item}>
           <div className={styles.agreement__checkbox}>
-            <input id="agreement" style={{ width: 16, height: 16 }} checked={isAgree} onChange={(e) => setAgree(!isAgree)} type="checkbox" />
+            <input id="agreement" style={{ width: 20, height: 20 }} checked={isAgree} onChange={(e) => setAgree(!isAgree)} type="checkbox" />
           </div>
           <label htmlFor="agreement" className={styles.agreement__text}>
             I Agree With{' '}
@@ -281,7 +295,7 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
         </div>
         <div className={styles.agreement__item}>
           <div className={styles.agreement__checkbox}>
-            <input id="subscribe" style={{ width: 16, height: 16 }} checked={isSubscribe} onChange={(e) => setSubscribe(!isSubscribe)} type="checkbox" />
+            <input id="subscribe" style={{ width: 20, height: 20 }} checked={isSubscribe} onChange={(e) => setSubscribe(!isSubscribe)} type="checkbox" />
           </div>
           <label htmlFor="subscribe" className={styles.agreement__text}>
             Get free tips and discount code for us.
