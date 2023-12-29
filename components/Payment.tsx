@@ -164,16 +164,16 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
               <div className={styles.row__title}>Credit Cards</div>
             </div>
             <div className={styles.row__right}>
-              <div className={styles.row__card}>
+              <div title="Master Card" className={styles.row__card}>
                 <Image width={35} height={25} src="/assets/payment/MasterCard.svg" alt="Master Card" />
               </div>
-              <div className={styles.row__card}>
+              <div title="Visa" className={styles.row__card}>
                 <Image width={35} height={25} src="/assets/payment/Visa.svg" alt="Visa" />
               </div>
-              <div className={styles.row__card}>
+              <div title="American Express" className={styles.row__card}>
                 <Image width={35} height={25} src="/assets/payment/amex.svg" alt="American Express" />
               </div>
-              <div className={styles.row__card}>
+              <div title="Google Pay" className={styles.row__card}>
                 <Image width={35} height={25} src="/assets/payment/discover.svg" alt="Google Pay" />
               </div>
             </div>

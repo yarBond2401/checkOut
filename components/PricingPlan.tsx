@@ -113,7 +113,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ pricingPlan, setPricingPlan, 
           {pricingPlan === PricingPlanEnum.PAY_AS_GO ? '*Enter Manually hours between 10 to 160' : '*You can also enter month manually between 1 to 12'}
         </div>
       </div>
-      <div className={styles.order_divider}></div>
+      <div style={{marginBottom: 32}} className={styles.order_divider}></div>
     </div>
   );
 };
