@@ -173,8 +173,8 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
               <div title="American Express" className={styles.row__card}>
                 <Image width={35} height={25} src="/assets/payment/amex.svg" alt="American Express" />
               </div>
-              <div title="Google Pay" className={styles.row__card}>
-                <Image width={35} height={25} src="/assets/payment/discover.svg" alt="Google Pay" />
+              <div title="Discover" className={styles.row__card}>
+                <Image width={35} height={25} src="/assets/payment/discover.svg" alt="Discover" />
               </div>
             </div>
           </div>
