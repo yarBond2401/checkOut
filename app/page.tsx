@@ -33,17 +33,24 @@ const HomePage: React.FC = () => {
     control,
     setValue,
     setError,
-  } = useForm<IForm>({});
+  } = useForm<IForm>({ shouldFocusError: false });
 
   const onSubmit: SubmitHandler<IForm> = async (data) => {
-    setSubmitClick(Date.now());
     if (!isAgree) return setShowSnackbar(true);
     if (data.confirmEmail !== data.email) return setError('confirmEmail', { message: 'Email Adress Is Not Matched' });
-    if (isAgree) setShowSnackbar(false);
 
     setPopup(true);
     console.log('data', data);
   };
+
+  useEffect(() => {
+    if (isShowSnackbar || Object.keys(errors).length > 0) {
+      const section = document.getElementById('section');
+      if (section) {
+        section.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }
+    }
+  }, [submitClick, errors]);
 
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
@@ -57,7 +64,7 @@ const HomePage: React.FC = () => {
   }, []);
 
   return (
-    <section className={styles.section}>
+    <section id="section" className={styles.section}>
       {isPopup && <Popup setPopup={setPopup} />}
       <div className={clsx(styles.container, { [styles.container__error]: Object.keys(errors).length > 0 || isShowSnackbar })}>
         {(isShowSnackbar || Object.keys(errors).length > 0) && (
@@ -82,7 +89,13 @@ const HomePage: React.FC = () => {
                   <h3 className={styles.summary__title}>Order Summary</h3>
                   <div className={styles.divider}></div>
                   <PricingPlan pricingPlan={pricingPlan} setPricingPlan={setPricingPlan} hours={hours} setHours={setHours} />
-                  <OrderSummary setDiscountCode={setDiscountCode} discountCode={discountCode} />
+                  <OrderSummary
+                    isAgree={isAgree}
+                    setShowSnackbar={setShowSnackbar}
+                    setSubmitClick={setSubmitClick}
+                    setDiscountCode={setDiscountCode}
+                    discountCode={discountCode}
+                  />
                 </div>
               </div>
             </>
@@ -107,7 +120,13 @@ const HomePage: React.FC = () => {
                   />
                   <h3 className={styles.summary__title}>Order summary</h3>
                   <div className={styles.divider}></div>
-                  <OrderSummary setDiscountCode={setDiscountCode} discountCode={discountCode} />
+                  <OrderSummary
+                    isAgree={isAgree}
+                    setShowSnackbar={setShowSnackbar}
+                    setSubmitClick={setSubmitClick}
+                    setDiscountCode={setDiscountCode}
+                    discountCode={discountCode}
+                  />
                 </div>
               </div>
             </>

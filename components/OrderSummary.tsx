@@ -6,9 +6,17 @@ import Link from 'next/link';
 interface OrderSummaryProps {
   discountCode: string;
   setDiscountCode: React.Dispatch<React.SetStateAction<string>>;
+  setSubmitClick: React.Dispatch<React.SetStateAction<number>>;
+  isAgree: boolean;
+  setShowSnackbar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCode }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCode, setSubmitClick, isAgree, setShowSnackbar }) => {
+  const handleSubmit = () => {
+    setSubmitClick(Date.now());
+    if (isAgree) setShowSnackbar(false);
+  };
+
   return (
     <div className={styles.orderSummary}>
       <div className={styles.discount}>
@@ -29,7 +37,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCo
           <div className={styles.total__text}>Subtotal (03 hours x $2398.4)</div>
           <div className={styles.total__text}>$299.9</div>
         </div>
-        <div className={styles.total__row}>
+        <div style={{marginBottom: 32}} className={styles.total__row}>
           <div className={styles.total__text}>Platform fee (2%)</div>
           <div className={styles.total__text}>$5.99</div>
         </div>
@@ -38,7 +46,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCo
           <div className={styles.total__text}>Order Total</div>
           <div className={styles.total__price}>$305.89</div>
         </div>
-        <button className={styles.total__button}>Pay now</button>
+        <button type="submit" onClick={handleSubmit} className={styles.total__button}>
+          Pay now
+        </button>
       </div>
       <div className={styles.secure}>
         <div className={styles.secure__item}>
