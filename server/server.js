@@ -4,7 +4,7 @@ import 'dotenv/config';
 import path from 'path';
 import cors from 'cors';
 
-const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8888 } = process.env;
+const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 5000 } = process.env;
 const base = 'https://api-m.sandbox.paypal.com';
 const app = express();
 
@@ -56,7 +56,8 @@ const createOrder = async (cart) => {
       {
         amount: {
           currency_code: 'USD',
-          value: cart.product.cost,
+          value: cart.cost,
+          method: cart.method
         },
       },
     ],
@@ -118,7 +119,6 @@ async function handleResponse(response) {
 
 app.post('/api/orders', async (req, res) => {
   try {
-    // use the cart information passed from the front-end to calculate the order amount detals
     const { cart } = req.body;
     const { jsonResponse, httpStatusCode } = await createOrder(cart);
     res.status(httpStatusCode).json(jsonResponse);

@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/popup.module.scss';
 import { RxCross1 } from 'react-icons/rx';
+import { setPopup } from '@/store/reducers/mainReducer';
 
-interface PopupProps {
-  setPopup: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const Popup: React.FC<PopupProps> = ({ setPopup }) => {
+const Popup: React.FC = ( ) => {
   const orderNumber = '123RGR231567Y';
 
   return (

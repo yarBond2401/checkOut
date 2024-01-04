@@ -19,20 +19,20 @@ import { ExpirationMonthVerification } from 'card-validator/dist/expiration-mont
 import { ExpirationYearVerification } from 'card-validator/dist/expiration-year';
 import { countries } from '@/constants/countries';
 import { EMAIL_REG_EXP } from '@/constants/emailRegularExp';
+import { setAgree, setPaymentMethod, setSubscribe } from '@/store/reducers/mainReducer';
+import useAppSelector from '@/hooks/use-app-selector';
+import useAppDispatch from '@/hooks/use-app-dispatch';
 
 interface PaymentProps {
   register: UseFormRegister<IForm>;
-  setPaymentMethod: React.Dispatch<React.SetStateAction<PaymentMethodEnum>>;
-  paymentMethod: PaymentMethodEnum;
   control: Control<IForm, any>;
-  isAgree: boolean;
-  isSubscribe: boolean;
-  setSubscribe: React.Dispatch<React.SetStateAction<boolean>>;
-  setAgree: React.Dispatch<React.SetStateAction<boolean>>;
   setValue: UseFormSetValue<IForm>;
 }
 
-const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMethod, control, isAgree, isSubscribe, setAgree, setSubscribe, setValue }) => {
+const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
+  const { isAgree, isSubscribe, paymentMethod } = useAppSelector((state) => state.mainReducer);
+  const dispatch = useAppDispatch();
+
   const watchedEmailInput = useWatch({ control, name: 'email' });
   const watchedNameInput = useWatch({ control, name: 'firstName' });
   const watchedLastNameInput = useWatch({ control, name: 'lastName' });
@@ -280,7 +280,7 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
       <div className={styles.agreement}>
         <div className={styles.agreement__item}>
           <div className={styles.agreement__checkbox}>
-            <input id="agreement" style={{ width: 20, height: 20 }} checked={isAgree} onChange={(e) => setAgree(!isAgree)} type="checkbox" />
+            <input id="agreement" style={{ width: 20, height: 20 }} checked={isAgree} onChange={(e) => dispatch(setAgree())} type="checkbox" />
           </div>
           <label htmlFor="agreement" className={styles.agreement__text}>
             I Agree With{' '}
@@ -295,7 +295,7 @@ const Payment: React.FC<PaymentProps> = ({ register, setPaymentMethod, paymentMe
         </div>
         <div className={styles.agreement__item}>
           <div className={styles.agreement__checkbox}>
-            <input id="subscribe" style={{ width: 20, height: 20 }} checked={isSubscribe} onChange={(e) => setSubscribe(!isSubscribe)} type="checkbox" />
+            <input id="subscribe" style={{ width: 20, height: 20 }} checked={isSubscribe} onChange={(e) => dispatch(setSubscribe())} type="checkbox" />
           </div>
           <label htmlFor="subscribe" className={styles.agreement__text}>
             Get free tips and discount code for us.

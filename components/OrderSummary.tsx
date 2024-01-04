@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styles from '../styles/main.module.scss';
 import Image from 'next/image';
 import Link from 'next/link';
+import PaymentButton from './PaymentButton';
+import { PaymentMethodEnum } from '@/models/PaymentMethodEnum';
 
 interface OrderSummaryProps {
   discountCode: string;
@@ -9,9 +11,11 @@ interface OrderSummaryProps {
   setSubmitClick: React.Dispatch<React.SetStateAction<number>>;
   isAgree: boolean;
   setShowSnackbar: React.Dispatch<React.SetStateAction<boolean>>;
+  paymentMethod: PaymentMethodEnum;
+  price: number;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCode, setSubmitClick, isAgree, setShowSnackbar }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCode, setSubmitClick, isAgree, setShowSnackbar, paymentMethod, price }) => {
   const handleSubmit = () => {
     setSubmitClick(Date.now());
     if (isAgree) setShowSnackbar(false);
@@ -37,7 +41,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCo
           <div className={styles.total__text}>Subtotal (03 hours x $2398.4)</div>
           <div className={styles.total__text}>$299.9</div>
         </div>
-        <div style={{marginBottom: 32}} className={styles.total__row}>
+        <div style={{ marginBottom: 32 }} className={styles.total__row}>
           <div className={styles.total__text}>Platform fee (2%)</div>
           <div className={styles.total__text}>$5.99</div>
         </div>
@@ -46,9 +50,16 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCo
           <div className={styles.total__text}>Order Total</div>
           <div className={styles.total__price}>$305.89</div>
         </div>
-        <button type="submit" onClick={handleSubmit} className={styles.total__button}>
-          Pay now
-        </button>
+
+        {paymentMethod === PaymentMethodEnum.PAYPAL ? (
+          <div style={{marginBottom: 23}}>
+            <PaymentButton paymentMethod={paymentMethod} price={price} />
+          </div>
+        ) : (
+          <button type="submit" onClick={handleSubmit} className={styles.total__button}>
+            Pay now
+          </button>
+        )}
       </div>
       <div className={styles.secure}>
         <div className={styles.secure__item}>
