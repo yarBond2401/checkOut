@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import styles from '../styles/popup.module.scss';
 import { RxCross1 } from 'react-icons/rx';
 import { setPopup } from '@/store/reducers/mainReducer';
+import useAppDispatch from '@/hooks/use-app-dispatch';
 
-const Popup: React.FC = ( ) => {
+const Popup: React.FC = () => {
+  const dispatch = useAppDispatch();
   const orderNumber = '123RGR231567Y';
 
   return (
     <div className={styles.popup}>
       <div className={styles.container}>
-        <button onClick={() => setPopup(false)} className={styles.closeButton}>
+        <button onClick={() => dispatch(setPopup(false))} className={styles.closeButton}>
           <RxCross1 />
         </button>
         <div className={styles.body}>
@@ -22,7 +24,9 @@ const Popup: React.FC = ( ) => {
           <div className={styles.mainText}>
             Order #{orderNumber} <br /> Confirmed
           </div>
-          <button className={styles.subminButton}>Submit</button>
+          <button onClick={() => dispatch(setPopup(false))} className={styles.subminButton}>
+            Submit
+          </button>
           <button className={styles.receiptButton}>Generate Receipt</button>
         </div>
       </div>

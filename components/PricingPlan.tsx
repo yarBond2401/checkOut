@@ -3,57 +3,33 @@ import styles from '../styles/main.module.scss';
 import { PricingPlanEnum } from '@/models/PricingPlanEnum';
 import clsx from 'clsx';
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
+import useAppDispatch from '@/hooks/use-app-dispatch';
+import { decreaseNum, handleHoursInputBlur, handleSetOrderVariant, increaseNum, setHours } from '@/store/reducers/pricingPlanReducer';
+import useAppSelector from '@/hooks/use-app-selector';
 
-interface PricingPlanProps {
-  pricingPlan: PricingPlanEnum;
-  hours: number;
-  setPricingPlan: React.Dispatch<React.SetStateAction<PricingPlanEnum>>;
-  setHours: React.Dispatch<React.SetStateAction<number>>;
-}
+const PricingPlan: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const {pricingPlan, hours} = useAppSelector(state => state.pricingPlanReducer)
 
-const PricingPlan: React.FC<PricingPlanProps> = ({ pricingPlan, setPricingPlan, hours, setHours }) => {
-  const decreaseNum = () => {
-    if (hours <= 10 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return;
-    if (hours <= 1 && pricingPlan === PricingPlanEnum.MONTHLY) return;
-    setHours((actual) => actual - 1);
-  };
-  const increaseNum = () => {
-    if (hours >= 160 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return;
-    if (hours >= 12 && pricingPlan === PricingPlanEnum.MONTHLY) return;
-    setHours((actual) => actual + 1);
-  };
-
-  const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHoursInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (isNaN(value)) return;
 
-    setHours(value);
+    dispatch(setHours(value));
   };
 
   const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
 
-    if (value < 10 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return setHours(10);
-    if (value < 1 && pricingPlan === PricingPlanEnum.MONTHLY) return setHours(1);
-    if (value > 160 && pricingPlan === PricingPlanEnum.PAY_AS_GO) return setHours(160);
-    if (value > 12 && pricingPlan === PricingPlanEnum.MONTHLY) return setHours(12);
+    dispatch(handleHoursInputBlur(value))
   };
 
-  const handleSetOrderVariant = (variant: PricingPlanEnum) => {
-    if (variant === PricingPlanEnum.PAY_AS_GO) {
-      setHours(10);
-      setPricingPlan(PricingPlanEnum.PAY_AS_GO);
-    } else {
-      setHours(1);
-      setPricingPlan(PricingPlanEnum.MONTHLY);
-    }
-  };
   return (
     <div className={styles.pricingPlan}>
       <div className={styles.order__variants}>
         <button
           type="button"
-          onClick={() => handleSetOrderVariant(PricingPlanEnum.PAY_AS_GO)}
+          onClick={() => dispatch(handleSetOrderVariant(PricingPlanEnum.PAY_AS_GO))}
           className={clsx(styles.order__variant, { [styles.order__variant_active]: pricingPlan === PricingPlanEnum.PAY_AS_GO })}
         >
           <div className={styles.order__head}>
@@ -75,7 +51,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ pricingPlan, setPricingPlan, 
         </button>
         <button
           type="button"
-          onClick={() => handleSetOrderVariant(PricingPlanEnum.MONTHLY)}
+          onClick={() => dispatch(handleSetOrderVariant(PricingPlanEnum.MONTHLY))}
           className={clsx(styles.order__variant, { [styles.order__variant_active]: pricingPlan === PricingPlanEnum.MONTHLY })}
         >
           <div className={styles.order__head}>
@@ -100,11 +76,11 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ pricingPlan, setPricingPlan, 
         <div className={styles.hours__container}>
           <h3 className={styles.hours__title}>{pricingPlan === PricingPlanEnum.PAY_AS_GO ? 'Pay as you go' : 'Monthly'}</h3>
           <div className={styles.hours__buttons}>
-            <button type="button" onClick={decreaseNum} className={styles.hours__minusButton}>
+            <button type="button" onClick={() => dispatch(decreaseNum())} className={styles.hours__minusButton}>
               <AiOutlineMinus />
             </button>
-            <input maxLength={4} type="text" value={hours} onBlur={handleBlur} onChange={(e) => handleHoursChange(e)} className={styles.hours__input} />
-            <button onClick={increaseNum} type="button" className={styles.hours__plusButton}>
+            <input maxLength={4} type="text" value={hours} onBlur={handleBlur} onChange={(e) => handleHoursInputChange(e)} className={styles.hours__input} />
+            <button onClick={() => dispatch(increaseNum())} type="button" className={styles.hours__plusButton}>
               <AiOutlinePlus />
             </button>
           </div>
@@ -113,7 +89,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ pricingPlan, setPricingPlan, 
           {pricingPlan === PricingPlanEnum.PAY_AS_GO ? '*Enter Manually hours between 10 to 160' : '*You can also enter month manually between 1 to 12'}
         </div>
       </div>
-      <div style={{marginBottom: 32}} className={styles.order_divider}></div>
+      <div style={{ marginBottom: 32 }} className={styles.order_divider}></div>
     </div>
   );
 };

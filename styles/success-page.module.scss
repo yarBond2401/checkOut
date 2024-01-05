@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+.section {
+  height: 100%;
+  color: #69727d;
+}
+.container {
+  max-width: 1110px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+}
+.left {
+  flex: 0 1 50%;
+  padding-top: 10px;
+}
+.thankText {
+  margin-bottom: 25px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.topData {
+  margin-bottom: 28px;
+  display: flex;
+  column-gap: 20px;
+  &__item {
+    padding-right: 20px;
+    position: relative;
+    &::after {
+      position: absolute;
+      content: '';
+      top: 0;
+      right: 0;
+      background-color: rgb(221, 221, 221);
+      height: 100%;
+      width: 1px;
+    }
+    &:last-child {
+      padding-right: 0;
+      &::after {
+        display: none;
+      }
+    }
+  }
+  &__label {
+    font-size: 10px;
+    margin-bottom: 3px;
+  }
+
+  &__value {
+    color: #35373a;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.titleWrapper {
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 22px;
+  background-color: rgb(251, 251, 251);
+  border: 1px solid rgb(221, 221, 221);
+  border-bottom: none;
+  margin-bottom: 15px;
+}
+.title {
+  font-family: 'Abril Fatface', serif;
+  font-size: 22px;
+  color: rgb(58, 58, 58);
+}
+.labels {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  padding-left: 14px;
+  &__item {
+    color: #35373a;
+    font-weight: 500;
+  }
+
+  &__product {
+    font-weight: 500;
+
+    .blue {
+      padding-right: 5px;
+      color: rgb(11, 99, 229);
+    }
+  }
+}
+
+.right {
+  padding-top: 104px;
+  padding-left: 0;
+  flex: 0 1 50%;
+  position: relative;
+  &__content {
+    position: relative;
+    z-index: 5;
+  }
+  &::after {
+    z-index: 0;
+    content: '';
+    background-color: #f7f7f7;
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+}
+.values {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  padding-left: 48px;
+  &__item {
+    color: rgb(105, 114, 125);
+  }
+}

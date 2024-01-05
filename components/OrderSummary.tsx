@@ -1,32 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styles from '../styles/main.module.scss';
 import Image from 'next/image';
 import Link from 'next/link';
 import PaymentButton from './PaymentButton';
 import { PaymentMethodEnum } from '@/models/PaymentMethodEnum';
+import useAppDispatch from '@/hooks/use-app-dispatch';
+import useAppSelector from '@/hooks/use-app-selector';
+import { setDiscountCode } from '@/store/reducers/mainReducer';
+import { IForm } from '@/models/IForm';
+import { FieldErrors } from 'react-hook-form';
 
 interface OrderSummaryProps {
-  discountCode: string;
-  setDiscountCode: React.Dispatch<React.SetStateAction<string>>;
-  setSubmitClick: React.Dispatch<React.SetStateAction<number>>;
-  isAgree: boolean;
-  setShowSnackbar: React.Dispatch<React.SetStateAction<boolean>>;
-  paymentMethod: PaymentMethodEnum;
-  price: number;
+  snackbarShow: () => {
+    payload: (string | undefined)[];
+    type: 'mainReducer/setSnackbarText';
+  };
+  errors: FieldErrors<IForm>;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCode, setSubmitClick, isAgree, setShowSnackbar, paymentMethod, price }) => {
-  const handleSubmit = () => {
-    setSubmitClick(Date.now());
-    if (isAgree) setShowSnackbar(false);
-  };
+const OrderSummary: React.FC<OrderSummaryProps> = ({ snackbarShow, errors }) => {
+  const dispatch = useAppDispatch();
+  const { discountCode, paymentMethod } = useAppSelector((state) => state.mainReducer);
+
 
   return (
     <div className={styles.orderSummary}>
       <div className={styles.discount}>
         <input
           value={discountCode}
-          onChange={(e) => setDiscountCode(e.target.value)}
+          onChange={(e) => dispatch(setDiscountCode(e.target.value))}
           type="text"
           className={styles.discount__input}
           placeholder="Gift or discount code"
@@ -50,16 +52,17 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ discountCode, setDiscountCo
           <div className={styles.total__text}>Order Total</div>
           <div className={styles.total__price}>$305.89</div>
         </div>
-
-        {paymentMethod === PaymentMethodEnum.PAYPAL ? (
-          <div style={{marginBottom: 23}}>
-            <PaymentButton paymentMethod={paymentMethod} price={price} />
-          </div>
-        ) : (
-          <button type="submit" onClick={handleSubmit} className={styles.total__button}>
-            Pay now
-          </button>
-        )}
+        <div onClick={() => snackbarShow()}>
+          {paymentMethod === PaymentMethodEnum.PAYPAL ? (
+            <div style={{ marginBottom: 23 }}>
+              <PaymentButton />
+            </div>
+          ) : (
+            <button  type="submit" className={styles.total__button}>
+              Pay now
+            </button>
+          )}
+        </div>
       </div>
       <div className={styles.secure}>
         <div className={styles.secure__item}>

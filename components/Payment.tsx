@@ -147,9 +147,9 @@ const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
       <h3 className={styles.subtitle}>Choose payment method</h3>
       <div className={styles.payment__variants}>
         <div className={styles.payment__variant}>
-          <div onClick={() => setPaymentMethod(PaymentMethodEnum.CREDIT_CARD)} className={styles.row}>
+          <div onClick={() => dispatch(setPaymentMethod(PaymentMethodEnum.CREDIT_CARD))} className={styles.row}>
             <div className={styles.row__left}>
-              <button type="button" onClick={() => setPaymentMethod(PaymentMethodEnum.CREDIT_CARD)} className={styles.radio}>
+              <button type="button" onClick={() => dispatch(setPaymentMethod(PaymentMethodEnum.CREDIT_CARD))} className={styles.radio}>
                 {paymentMethod === PaymentMethodEnum.CREDIT_CARD ? (
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
                     <circle cx="7.99992" cy="8.49992" r="3.78947" fill="#0B62E5" />
@@ -259,9 +259,9 @@ const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
             </>
           )}
         </div>
-        <div onClick={() => setPaymentMethod(PaymentMethodEnum.PAYPAL)} className={styles.payment__variant}>
+        <div onClick={() => dispatch(setPaymentMethod(PaymentMethodEnum.PAYPAL))} className={styles.payment__variant}>
           <div className={styles.paypalRow}>
-            <button type="button" onClick={() => setPaymentMethod(PaymentMethodEnum.PAYPAL)} className={styles.radio}>
+            <button type="button" onClick={() => dispatch(setPaymentMethod(PaymentMethodEnum.PAYPAL))} className={styles.radio}>
               {paymentMethod === PaymentMethodEnum.PAYPAL ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
                   <circle cx="7.99992" cy="8.49992" r="3.78947" fill="#0B62E5" />
