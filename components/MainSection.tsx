@@ -17,12 +17,13 @@ import useAppSelector from '@/hooks/use-app-selector';
 import { setPopup } from '@/store/reducers/mainReducer';
 import useAppDispatch from '@/hooks/use-app-dispatch';
 import { useAppSnakbar } from '@/hooks/use-app-snackbar';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
 const MainSection: React.FC = ({}) => {
   const { windowWidth } = useGetWindowWidth();
   const { isPopup, isAgree, snackbarText } = useAppSelector((state) => state.mainReducer);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -30,21 +31,20 @@ const MainSection: React.FC = ({}) => {
     control,
     setValue,
   } = useForm<IForm>({ shouldFocusError: false });
-  const { snackbarShow } = useAppSnakbar();
+  const {snackbarShow} = useAppSnakbar(errors)
 
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
-      snackbarShow(errors);
+      snackbarShow();
     }
   }, [errors]);
 
   const onSubmit: SubmitHandler<IForm> = async (data) => {
     if (!isAgree) return;
-    if (data.confirmEmail !== data.email && !isAgree) return snackbarShow(errors);
+    if (data.confirmEmail !== data.email && !isAgree) return snackbarShow();
 
     dispatch(setPopup(true));
-    console.log('data', data);
-    redirect('/order-recieved');
+    router.push('/order-recieved')
   };
 
   return (
@@ -62,7 +62,7 @@ const MainSection: React.FC = ({}) => {
                     <h3 className={styles.summary__title}>Order Summary</h3>
                     <div className={styles.divider}></div>
                     <PricingPlan />
-                    <OrderSummary errors={errors} snackbarShow={() => snackbarShow(errors)} />
+                    <OrderSummary snackbarShow={() => snackbarShow()} />
                   </div>
                 </div>
               </>
@@ -77,7 +77,7 @@ const MainSection: React.FC = ({}) => {
                     <Payment setValue={setValue} control={control} register={register} />
                     <h3 className={styles.summary__title}>Order summary</h3>
                     <div className={styles.divider}></div>
-                    <OrderSummary errors={errors} snackbarShow={() => snackbarShow(errors)} />
+                    <OrderSummary snackbarShow={() => snackbarShow()} />
                   </div>
                 </div>
               </>

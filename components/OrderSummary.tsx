@@ -15,10 +15,9 @@ interface OrderSummaryProps {
     payload: (string | undefined)[];
     type: 'mainReducer/setSnackbarText';
   };
-  errors: FieldErrors<IForm>;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ snackbarShow, errors }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ snackbarShow }) => {
   const dispatch = useAppDispatch();
   const { discountCode, paymentMethod } = useAppSelector((state) => state.mainReducer);
 

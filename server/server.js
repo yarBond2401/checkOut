@@ -57,7 +57,8 @@ const createOrder = async (cart) => {
         amount: {
           currency_code: 'USD',
           value: cart.cost,
-          method: cart.method
+          method: cart.method,
+          isSubscribed: cart.isSubscribed,
         },
       },
     ],

@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from '../../styles/success-page.module.scss';
 import useAppSelector from '@/hooks/use-app-selector';
 import Popup from '@/components/Popup';
+import useAppDispatch from '@/hooks/use-app-dispatch';
+import { setPopup } from '@/store/reducers/mainReducer';
 
 const OrderRecievedSection: React.FC = ({}) => {
   const { isPopup } = useAppSelector((state) => state.mainReducer);
+  const dispatch = useAppDispatch();
+
   const product = 'Pay As You Go';
   const hours = 10;
   const subtotal = '$299.90';
@@ -13,6 +17,10 @@ const OrderRecievedSection: React.FC = ({}) => {
   const total = '$305.90';
   const date = 'January 5, 2024';
   const orderNumber = '14895';
+
+  useEffect(() => {
+    dispatch(setPopup(true));
+  }, []);
 
   return (
     <div className={styles.section}>

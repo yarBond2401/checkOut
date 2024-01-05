@@ -5,18 +5,17 @@ import axios from 'axios';
 import useAppSelector from '@/hooks/use-app-selector';
 
 const PaymentButton: React.FC = () => {
-  const { paymentMethod, price, snackbarText } = useAppSelector((state) => state.mainReducer);
+  const { paymentMethod, price, isSubscribe } = useAppSelector((state) => state.mainReducer);
   const serverUrl = 'http://localhost:5000';
 
   const createOrder = async (data: CreateOrderData) => {
     // Order is created on the server and the order id is returned
-    if (snackbarText.length > 0) return;
-    debugger;
     try {
       const response = await axios.post(
         `${serverUrl}/api/orders`,
         {
           cart: {
+            isSubscribed: isSubscribe,
             method: paymentMethod,
             cost: price,
           },
@@ -35,8 +34,6 @@ const PaymentButton: React.FC = () => {
     }
   };
   const onApprove = async (data: OnApproveData) => {
-    if (snackbarText.length > 0) return;
-    debugger;
 
     try {
       const response = await axios.post(
