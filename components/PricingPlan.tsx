@@ -4,12 +4,12 @@ import { PricingPlanEnum } from '@/models/PricingPlanEnum';
 import clsx from 'clsx';
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
 import useAppDispatch from '@/hooks/use-app-dispatch';
-import { decreaseNum, handleHoursInputBlur, handleSetOrderVariant, increaseNum, setHours } from '@/store/reducers/pricingPlanReducer';
+import { decreaseNum, handleHoursInputBlur, handleSetOrderVariant, increaseNum, setHours } from '@/store/reducers/pricingReducer';
 import useAppSelector from '@/hooks/use-app-selector';
 
 const PricingPlan: React.FC = () => {
   const dispatch = useAppDispatch();
-  const {pricingPlan, hours} = useAppSelector(state => state.pricingPlanReducer)
+  const { pricingPlan, currentHours } = useAppSelector((state) => state.pricingReducer);
 
   const handleHoursInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -21,7 +21,7 @@ const PricingPlan: React.FC = () => {
   const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
 
-    dispatch(handleHoursInputBlur(value))
+    dispatch(handleHoursInputBlur(value));
   };
 
   return (
@@ -79,7 +79,14 @@ const PricingPlan: React.FC = () => {
             <button type="button" onClick={() => dispatch(decreaseNum())} className={styles.hours__minusButton}>
               <AiOutlineMinus />
             </button>
-            <input maxLength={4} type="text" value={hours} onBlur={handleBlur} onChange={(e) => handleHoursInputChange(e)} className={styles.hours__input} />
+            <input
+              maxLength={4}
+              type="text"
+              value={currentHours}
+              onBlur={handleBlur}
+              onChange={(e) => handleHoursInputChange(e)}
+              className={styles.hours__input}
+            />
             <button onClick={() => dispatch(increaseNum())} type="button" className={styles.hours__plusButton}>
               <AiOutlinePlus />
             </button>

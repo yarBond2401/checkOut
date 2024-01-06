@@ -1,25 +1,40 @@
 import { PaymentMethodEnum } from '@/models/PaymentMethodEnum';
-import { PricingPlanEnum } from '@/models/PricingPlanEnum';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface mainReducer {
+  formData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    confirmEmail: string;
+    cardNumber: string;
+    expiration: string;
+    cvv: string;
+    country: string;
+    phoneNumber: string;
+  };
   paymentMethod: PaymentMethodEnum;
-  discountCode: string;
   isAgree: boolean;
   isSubscribe: boolean;
-  isPopup: boolean;
-  price: number;
-  snackbarText: (string | undefined)[];
+  snackbarText: (string | null)[];
 }
 
 const initialState: mainReducer = {
   paymentMethod: PaymentMethodEnum.CREDIT_CARD,
-  discountCode: '',
-  isPopup: false,
-  price: 20,
   isSubscribe: false,
   isAgree: false,
   snackbarText: [],
+  formData: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    confirmEmail: '',
+    cardNumber: '',
+    expiration: '',
+    cvv: '',
+    country: 'United States (US)',
+    phoneNumber: '',
+  },
 };
 
 const mainSlice = createSlice({
@@ -30,10 +45,6 @@ const mainSlice = createSlice({
       state.paymentMethod = action.payload;
     },
 
-    setDiscountCode(state, action: PayloadAction<string>) {
-      state.discountCode = action.payload;
-    },
-
     setAgree(state) {
       state.isAgree = !state.isAgree;
     },
@@ -42,20 +53,55 @@ const mainSlice = createSlice({
       state.isSubscribe = !state.isSubscribe;
     },
 
-    setPopup(state, action: PayloadAction<boolean>) {
-      state.isPopup = action.payload;
-    },
-
-    setSnackbarText(state, action: PayloadAction<(string | undefined)[]>) {
+    setSnackbarText(state, action: PayloadAction<(string | null)[]>) {
       state.snackbarText = action.payload;
     },
-
-    setPrice(state, action: PayloadAction<number>) {
-      state.price = action.payload;
+    /* ============================================================================================================================= */
+    setFirstName(state, action: PayloadAction<string>) {
+      state.formData.firstName = action.payload;
+    },
+    setLastName(state, action: PayloadAction<string>) {
+      state.formData.lastName = action.payload;
+    },
+    setEmail(state, action: PayloadAction<string>) {
+      state.formData.email = action.payload;
+    },
+    setConfirmEmail(state, action: PayloadAction<string>) {
+      state.formData.confirmEmail = action.payload;
+    },
+    setCountry(state, action: PayloadAction<string>) {
+      state.formData.country = action.payload;
+    },
+    setPhoneNumber(state, action: PayloadAction<string>) {
+      state.formData.phoneNumber = action.payload;
+    },
+    setCardNumber(state, action: PayloadAction<string>) {
+      state.formData.cardNumber = action.payload;
+    },
+    setExpiration(state, action: PayloadAction<string>) {
+      state.formData.expiration = action.payload;
+    },
+    setCvv(state, action: PayloadAction<string>) {
+      state.formData.cvv = action.payload;
     },
   },
 });
 
-export const { setPaymentMethod, setDiscountCode, setAgree, setSubscribe, setPopup, setPrice, setSnackbarText } = mainSlice.actions;
+export const {
+  setPaymentMethod,
+  setAgree,
+  setSubscribe,
+  setSnackbarText,
+
+  setFirstName,
+  setCardNumber,
+  setConfirmEmail,
+  setCountry,
+  setCvv,
+  setEmail,
+  setExpiration,
+  setLastName,
+  setPhoneNumber,
+} = mainSlice.actions;
 
 export default mainSlice.reducer;

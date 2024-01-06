@@ -4,39 +4,35 @@ import CustomInput from './CustomInput';
 import { PaymentMethodEnum } from '@/models/PaymentMethodEnum';
 import Image from 'next/image';
 import clsx from 'clsx';
-import { Control, Controller, FormState, UseFormRegister, UseFormSetError, UseFormSetValue, useForm, useWatch } from 'react-hook-form';
-import { IForm } from '@/models/IForm';
 import Link from 'next/link';
 import CardInput from './CardDataInput';
-
-import { number } from 'card-validator';
-import { CardNumberVerification } from 'card-validator/dist/card-number';
-import { cvv } from 'card-validator';
-import { Verification } from 'card-validator/dist/types';
-import { expirationDate, expirationMonth, expirationYear } from 'card-validator';
-import { ExpirationDateVerification } from 'card-validator/dist/expiration-date';
-import { ExpirationMonthVerification } from 'card-validator/dist/expiration-month';
-import { ExpirationYearVerification } from 'card-validator/dist/expiration-year';
 import { countries } from '@/constants/countries';
 import { EMAIL_REG_EXP } from '@/constants/emailRegularExp';
-import { setAgree, setPaymentMethod, setSubscribe } from '@/store/reducers/mainReducer';
+import {
+  setAgree,
+  setCardNumber,
+  setCvv,
+  setExpiration,
+  setPaymentMethod,
+  setSubscribe,
+  setConfirmEmail,
+  setCountry,
+  setEmail,
+  setFirstName,
+  setLastName,
+  setPhoneNumber,
+} from '@/store/reducers/mainReducer';
 import useAppSelector from '@/hooks/use-app-selector';
 import useAppDispatch from '@/hooks/use-app-dispatch';
 
-interface PaymentProps {
-  register: UseFormRegister<IForm>;
-  control: Control<IForm, any>;
-  setValue: UseFormSetValue<IForm>;
-}
-
-const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
-  const { isAgree, isSubscribe, paymentMethod } = useAppSelector((state) => state.mainReducer);
+const Payment: React.FC = () => {
+  const {
+    isAgree,
+    isSubscribe,
+    paymentMethod,
+    formData: { firstName, lastName, email, confirmEmail, cardNumber, cvv, expiration, country, phoneNumber },
+  } = useAppSelector((state) => state.mainReducer);
   const dispatch = useAppDispatch();
-
-  const watchedEmailInput = useWatch({ control, name: 'email' });
-  const watchedNameInput = useWatch({ control, name: 'firstName' });
-  const watchedLastNameInput = useWatch({ control, name: 'lastName' });
-  const watchedConfirmEmailInput = useWatch({ control, name: 'confirmEmail' });
   /* ============================================================================================================================= */
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedCardNumber = e.target.value
@@ -45,22 +41,23 @@ const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
       .slice(0, 19)
       .trim();
 
-    setValue('cardNumber', formattedCardNumber);
+    dispatch(setCardNumber(formattedCardNumber));
   };
 
   const handleCVVChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue('cvv', e.target.value.replace(/\D/g, '').slice(0, 4));
+    const inputValue = e.target.value.replace(/\D/g, '').slice(0, 4);
+    dispatch(setCvv(inputValue));
   };
 
   const handleExpirationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value.replace(/\D/g, ''); // Удаление всех символов, кроме цифр
+    const inputValue = e.target.value.replace(/\D/g, '');
     if (inputValue[0] === '0' || inputValue[0] === '1') {
       const formattedValue = inputValue.substring(0, 2) + (inputValue.length > 2 ? ' / ' : '') + inputValue.replace(/\//g, '').substring(2, 4);
-      setValue('expiration', formattedValue);
+      dispatch(setExpiration(formattedValue));
     } else {
       const formattedValue =
         (inputValue.length === 1 ? '0' : '') + inputValue.substring(0, 1) + (inputValue.length > 2 ? '/' : '') + inputValue.replace(/\//g, '').substring(2, 4);
-      setValue('expiration', formattedValue);
+      dispatch(setExpiration(formattedValue));
     }
   };
 
@@ -72,16 +69,16 @@ const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
       <div className={styles.payment__inputs}>
         <div className={styles.payment__inputsRow}>
           <CustomInput
-            errorMessage="Billing First Name Is A Required Field."
-            register={register}
+            onChangeCallback={setFirstName}
+            value={firstName}
             isRequired={true}
             label="First Name"
             id="firstName"
             placeholder="First Name"
           />
           <CustomInput
-            errorMessage="Billing Last Name Is A Required Field."
-            register={register}
+            onChangeCallback={setLastName}
+            value={lastName}
             isRequired={true}
             label="Last Name"
             id="lastName"
@@ -89,36 +86,33 @@ const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
           />
         </div>
         <CustomInput
-          errorMessage="Billing Email Address Is A Required Field"
-          regularExpression={EMAIL_REG_EXP}
-          register={register}
+          onChangeCallback={setEmail}
+          value={email}
           isRequired={true}
           label="Contact Email"
           id="email"
           placeholder="Contact Email"
         />
-        {watchedNameInput && watchedLastNameInput && EMAIL_REG_EXP.test(watchedEmailInput) && (
+        {firstName && lastName && EMAIL_REG_EXP.test(email) && (
           <>
             <CustomInput
-              errorMessage="Billing Confirm Email Is A Required Field."
-              register={register}
+              onChangeCallback={setConfirmEmail}
+              value={confirmEmail}
               isRequired={true}
               label="Confirm Email"
               id="confirmEmail"
               placeholder="Confirm Email"
             />
-            {watchedConfirmEmailInput && watchedEmailInput && watchedConfirmEmailInput !== watchedEmailInput && (
-              <div className={styles.mismatch}>Email Adress Is Not Matched</div>
-            )}
+            {confirmEmail && email && confirmEmail !== email && <div className={styles.mismatch}>Email Adress Is Not Matched</div>}
             <div className={styles.payment__inputsRow}>
               <div className={styles.input}>
                 <label className={styles.input__label} htmlFor="country">
                   Country/Region
                 </label>
                 <select
-                  defaultValue={'United States (US)'}
-                  {...register('country', { required: 'Please, select a country' })}
+                  onChange={(e) => dispatch(setCountry(e.target.value))}
                   className={styles.input__item}
+                  value={country}
                   name="countries"
                   id="country"
                 >
@@ -131,9 +125,9 @@ const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
               </div>
 
               <CustomInput
+                onChangeCallback={setPhoneNumber}
+                value={phoneNumber}
                 type="number"
-                errorMessage="Billing Phone Is A Required Field."
-                register={register}
                 isRequired={true}
                 label="Phone Number"
                 id="phoneNumber"
@@ -142,7 +136,7 @@ const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
             </div>
           </>
         )}
-        {!EMAIL_REG_EXP.test(watchedEmailInput) && watchedEmailInput && <div className={styles.error}>Invalid Email Address</div>}
+        {!EMAIL_REG_EXP.test(email) && email && <div className={styles.error}>Invalid Email Address</div>}
       </div>
       <h3 className={styles.subtitle}>Choose payment method</h3>
       <div className={styles.payment__variants}>
@@ -182,78 +176,25 @@ const Payment: React.FC<PaymentProps> = ({ register, control, setValue }) => {
             <>
               <div className={styles.payText}>Pay with your Credit Card via Stripe</div>
               <div className={clsx(styles.payment__inputs, styles.payment__inputs_bottom)}>
-                <Controller
-                  rules={{
-                    required: 'Card Number is required',
-                    validate: (value) => {
-                      const newValue = value.replace(/\s/g, '');
-                      const cardNumberValidator: CardNumberVerification = number(newValue);
-                      if ((newValue && !cardNumberValidator.isPotentiallyValid) || !cardNumberValidator.isValid) {
-                        return 'Invalid Card Number';
-                      }
-                      return true;
-                    },
-                  }}
-                  name="cardNumber"
-                  control={control}
-                  defaultValue={''}
-                  render={({ field }) => (
-                    <CardInput
-                      isRequired={false}
-                      label="Card Number"
-                      id="cardNumber"
-                      placeholder="1234 5678 9101 1121"
-                      field={field}
-                      hangleChange={handleCardNumberChange}
-                    />
-                  )}
+                <CardInput
+                  value={cardNumber}
+                  isRequired={false}
+                  label="Card Number"
+                  id="cardNumber"
+                  placeholder="1234 5678 9101 1121"
+                  hangleChange={handleCardNumberChange}
                 />
                 <div style={{ marginBottom: 16 }}></div>
                 <div className={styles.payment__inputsRow}>
-                  <Controller
-                    rules={{
-                      required: 'Expiration is required',
-                      validate: (value) => {
-                        const newValue = value.replace(/\s/g, '');
-                        const epirationDate: ExpirationDateVerification = expirationDate(newValue);
-                        // const epirationMonth: ExpirationMonthVerification = expirationMonth(newValue);
-                        // const epirationYear: ExpirationYearVerification = expirationYear(newValue);
-                        if ((newValue && !epirationDate.isPotentiallyValid) || !epirationDate.isValid) {
-                          return 'Invalid Expiration';
-                        }
-                        return true;
-                      },
-                    }}
-                    name="expiration"
-                    control={control}
-                    defaultValue={''}
-                    render={({ field }) => (
-                      <CardInput
-                        isRequired={false}
-                        label="Expiration Date"
-                        id="expiration"
-                        placeholder="MM/YY"
-                        field={field}
-                        hangleChange={handleExpirationChange}
-                      />
-                    )}
+                  <CardInput
+                    value={expiration}
+                    isRequired={false}
+                    label="Expiration Date"
+                    id="expiration"
+                    placeholder="MM/YY"
+                    hangleChange={handleExpirationChange}
                   />
-                  <Controller
-                    rules={{
-                      required: 'CVV is required',
-                      validate: (value) => {
-                        const CVCverify: Verification = cvv(value);
-                        if ((value && !CVCverify.isPotentiallyValid) || !CVCverify.isValid) {
-                          return 'Invalid CVV';
-                        }
-                        return true;
-                      },
-                    }}
-                    name="cvv"
-                    control={control}
-                    defaultValue={''}
-                    render={({ field }) => <CardInput isRequired={false} label="CVV" id="cvv" placeholder="123" field={field} hangleChange={handleCVVChange} />}
-                  />
+                  <CardInput value={cvv} isRequired={false} label="CVV" id="cvv" placeholder="123" hangleChange={handleCVVChange} />
                 </div>
               </div>
             </>

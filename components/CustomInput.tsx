@@ -1,20 +1,25 @@
-import { IForm } from '@/models/IForm';
 import React from 'react';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import styles from '../styles/main.module.scss';
 import clsx from 'clsx';
+import useAppDispatch from '@/hooks/use-app-dispatch';
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
 
 interface CustomInputProps {
   label: string;
   id: 'firstName' | 'lastName' | 'email' | 'cardNumber' | 'expiration' | 'cvv' | 'confirmEmail' | 'country' | 'phoneNumber';
   placeholder: string;
   isRequired: boolean;
-  register: UseFormRegister<IForm>;
-  regularExpression?: RegExp | null;
-  errorMessage: string;
   type?: string;
+  value: string;
+  onChangeCallback: ActionCreatorWithPayload<string, any>;
 }
-const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isRequired, register, regularExpression = null, errorMessage, type = 'text' }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isRequired, type = 'text', value, onChangeCallback }) => {
+  const dispatch = useAppDispatch();
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    dispatch(onChangeCallback(value));
+  };
 
   return (
     <div className={clsx(styles.input, { [styles.input__mb26]: isRequired })}>
@@ -22,20 +27,8 @@ const CustomInput: React.FC<CustomInputProps> = ({ label, id, placeholder, isReq
         {label}
       </label>
       <input
-        {...register(
-          id,
-          regularExpression
-            ? {
-                required: errorMessage,
-                pattern: {
-                  value: regularExpression,
-                  message: `Invalid ${label}`,
-                },
-              }
-            : {
-                required: errorMessage,
-              }
-        )}
+        onChange={(e) => onChange(e)}
+        value={value}
         className={styles.input__item}
         id={id}
         type={type}

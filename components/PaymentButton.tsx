@@ -3,21 +3,37 @@ import { PayPalButtons } from '@paypal/react-paypal-js';
 import { OnApproveData, CreateOrderData } from '@paypal/paypal-js/types';
 import axios from 'axios';
 import useAppSelector from '@/hooks/use-app-selector';
+import { IPostRequest } from '@/models/paymentInfo/IPostRequest';
+import { useRouter } from 'next/navigation';
+import { useAppSnakbar } from '@/hooks/use-app-snackbar';
 
 const PaymentButton: React.FC = () => {
-  const { paymentMethod, price, isSubscribe } = useAppSelector((state) => state.mainReducer);
-  const serverUrl = 'http://localhost:5000';
+  const {
+    paymentMethod,
+    isSubscribe,
+    formData: { firstName, lastName, email, country, phoneNumber },
+  } = useAppSelector((state) => state.mainReducer);
+  const {
+    currentHours,
+    totalPrice,
+    pricingPlan,
+    subtotalPrice,
+    discountPrice,
+    discountCodeText,
+    standartPaymentData: { platformFee },
+  } = useAppSelector((state) => state.pricingReducer);
+  const { snackbarShow } = useAppSnakbar();
+  const router = useRouter();
 
-  const createOrder = async (data: CreateOrderData) => {
-    // Order is created on the server and the order id is returned
+  const createOrder = async (data: CreateOrderData, totalPrice: number) => {
     try {
       const response = await axios.post(
-        `${serverUrl}/api/orders`,
+        `https://quickproject-72c0b705df0a.herokuapp.com/userPayments/api/createOrder`,
         {
           cart: {
             isSubscribed: isSubscribe,
             method: paymentMethod,
-            cost: price,
+            cost: totalPrice,
           },
         },
         {
@@ -27,17 +43,15 @@ const PaymentButton: React.FC = () => {
         }
       );
       const order = response.data;
-      console.log('orderData', order);
       return order.id;
     } catch (error) {
       console.error('Ошибка при запросе:', error);
     }
   };
   const onApprove = async (data: OnApproveData) => {
-
     try {
       const response = await axios.post(
-        `${serverUrl}/api/orders/${data.orderID}/capture`,
+        `https://quickproject-72c0b705df0a.herokuapp.com/userPayments/api/orders?orderId=${data.orderID}`,
         {
           orderID: data.orderID,
         },
@@ -47,8 +61,35 @@ const PaymentButton: React.FC = () => {
           },
         }
       );
-      console.log('approveData', response.data);
-      return response.data;
+
+      if (response.data) {
+        const promoCode = discountPrice !== 0 ? 'SomePromocode' : discountCodeText;
+        const obj: IPostRequest = {
+          userData: {
+            firstName,
+            lastName,
+            contactEmail: email,
+            countryRegion: country,
+            phone: phoneNumber,
+          },
+          paymentData: {
+            hours: currentHours,
+            transactionId: data.orderID,
+            dateTime: new Date(),
+            promoCode,
+            paymentMethod,
+            pricingPlan,
+            orderTotal: totalPrice,
+            platformFee: (subtotalPrice * platformFee) / 100,
+          },
+        };
+
+        const postRequest = await axios.post<{ data: { transactionId: number } }>(`https://quickproject-72c0b705df0a.herokuapp.com/userPayments`, obj);
+        if (postRequest.data) {
+          router.push(`/order-recieved/${postRequest.data.data.transactionId}`);
+          return response.data;
+        }
+      }
     } catch (error) {
       console.error('Ошибка при запросе:', error);
     }
@@ -58,7 +99,7 @@ const PaymentButton: React.FC = () => {
     <PayPalButtons
       style={{ color: 'blue', tagline: false, height: 35 }}
       fundingSource="paypal"
-      createOrder={(data, actions) => createOrder(data)}
+      createOrder={(data, actions) => createOrder(data, totalPrice)}
       onApprove={(data, actions) => onApprove(data)}
     />
   );

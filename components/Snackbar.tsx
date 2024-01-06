@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/main.module.scss';
 import { RiErrorWarningFill } from 'react-icons/ri';
-import { Control, FieldErrors, useWatch } from 'react-hook-form';
-import { IForm } from '@/models/IForm';
-import { PaymentMethodEnum } from '@/models/PaymentMethodEnum';
 import useAppSelector from '@/hooks/use-app-selector';
 
-interface SnackbarProps {
-  control: Control<IForm, any>;
-}
 
-const Snackbar: React.FC<SnackbarProps> = () => {
+const Snackbar: React.FC = () => {
   const { snackbarText } = useAppSelector((state) => state.mainReducer);
 
   return (

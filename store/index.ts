@@ -1,10 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import mainReducer from './reducers/mainReducer';
-import pricingPlanReducer from './reducers/pricingPlanReducer';
+import pricingReducer from './reducers/pricingReducer';
 
 const rootReducer = combineReducers({
   mainReducer,
-  pricingPlanReducer,
+  pricingReducer,
 });
 
 export const setupStore = () => {
