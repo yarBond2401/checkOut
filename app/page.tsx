@@ -1,23 +1,22 @@
-import MainSection from '@/components/MainSection';
 import React from 'react';
-import StoreProvider from '../providers/StoreProvider';
-import axios from 'axios';
-import { IStandartPaymentData } from '@/models/paymentInfo/IStandartPaymentData';
+import Link from 'next/link';
 
-const getPaymentInfo = async () => {
-  const response = await axios.get<IStandartPaymentData>(`https://quickproject-72c0b705df0a.herokuapp.com/paymentInfo`);
-
-  if (!response.data) throw new Error('Unable to fetch payment information'); 
-  return response.data
-};
-
-const HomePage: React.FC = async () => {
-  const standartPaymentData = await getPaymentInfo();
-
+const HomePage = () => {
   return (
-    <StoreProvider>
-      <MainSection standartPaymentData={standartPaymentData} />
-    </StoreProvider>
+    <div>
+      <div style={{ paddingLeft: 30, marginBottom: 30, textDecoration: 'underline' }}>
+        <Link href="/checkout/pay-as-you-go">checkout/pay-as-you-go</Link>
+      </div>
+      <div style={{ paddingLeft: 30, marginBottom: 30, textDecoration: 'underline' }}>
+        <Link href="/checkout/monthly">checkout/monthly</Link>
+      </div>
+      <div style={{ paddingLeft: 30, marginBottom: 30, textDecoration: 'underline' }}>
+        <Link href="/login">login</Link>
+      </div>
+      <div style={{ paddingLeft: 30, marginBottom: 30, textDecoration: 'underline' }}>
+        <Link href="/admin-pannel">admin-pannel</Link>
+      </div>
+    </div>
   );
 };
 export default HomePage;
