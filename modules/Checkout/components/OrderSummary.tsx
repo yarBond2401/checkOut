@@ -70,22 +70,6 @@ const OrderSummary: React.FC = () => {
     }
   }, [currentHours]);
 
-
-  const submitHandler = () => {
-    // if (!snackbarShow()) return;
-    if (typeof hostedFields.submit !== 'function') return;
-    hostedFields
-      .submit({
-        cardholderName: 'John Wick',
-      })
-      .then((order: any) => {
-        fetch('/your-server-side-integration-endpoint/capture-payment-info')
-          .then((response) => response.json())
-          .then((data) => {})
-          .catch((err) => {});
-      });
-  };
-
   return (
     <div className={styles.orderSummary}>
       <div className={styles.discount}>
@@ -127,7 +111,7 @@ const OrderSummary: React.FC = () => {
               <PaymentButton />
             </div>
           ) : (
-            <button onClick={submitHandler} className={styles.total__button}>
+            <button className={styles.total__button}>
               Pay now
             </button>
           )}

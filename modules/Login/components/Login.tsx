@@ -1,12 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { ILogin } from './models/ILogin';
+import { ILogin } from '../models/ILogin';
 import { TextField, Typography, Button, Box } from '@mui/material';
 import { EMAIL_REG_EXP } from '@/constants/emailRegularExp';
 import { signIn } from 'next-auth/react';
 
 const LoginForm: React.FC = () => {
+  const [error, serError] = useState<any>();
   const {
     register,
     handleSubmit,
@@ -14,12 +15,17 @@ const LoginForm: React.FC = () => {
   } = useForm<ILogin>({});
 
   const onSubmit: SubmitHandler<ILogin> = (userCredentials) => {
-    signIn('credentials', {
-      email: userCredentials.email,
-      password: userCredentials.password,
-      redirect: true,
-      callbackUrl: '/admin-pannel',
-    });
+    debugger;
+    try {
+      signIn('credentials', {
+        email: userCredentials.email,
+        password: userCredentials.password,
+        redirect: true,
+        callbackUrl: '/admin-pannel',
+      });
+    } catch (error) {
+      serError(error);
+    }
   };
 
   const fieldIsRequired = 'Field is required';
@@ -50,13 +56,13 @@ const LoginForm: React.FC = () => {
         error={!!errors.password}
         helperText={errors.password?.message}
       />
-      {/* {error && (
+      {error && (
         <Typography color="red" variant="h6" paragraph gutterBottom>
           {error}
         </Typography>
-      )} */}
+      )}
       <Button sx={{ marginBottom: '20px' }} variant="contained" type="submit" fullWidth color="primary">
-        Signup
+        Sign In
       </Button>
     </Box>
   );

@@ -1,6 +1,9 @@
-import LoginForm from '@/modules/Login/Login';
+import LoginModule from '@/modules/Login';
+import { getServerSession } from 'next-auth';
 
-const LoginPage = () => {
-  return <LoginForm />;
+const LoginPage = async () => {
+  const session = await getServerSession();
+
+  return <LoginModule/>;
 };
 export default LoginPage;

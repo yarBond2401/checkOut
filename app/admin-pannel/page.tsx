@@ -4,7 +4,7 @@ import axios from 'axios';
 import { IOrderRecievedData } from '@/models/paymentInfo/IOrderRecievedData';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import SessionProvider from '@/modules/AdminPannel/providers/SessionProvider';
+import SessionProvider from '@/providers/SessionProvider';
 
 const convertedObject = {
   data: {

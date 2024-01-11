@@ -149,54 +149,29 @@ const Payment: React.FC = () => {
           {paymentMethod === PaymentMethodEnum.CREDIT_CARD && (
             <>
               <div className={styles.payText}>Pay with your Credit Card via Stripe</div>
-              <PayPalHostedFieldsProvider
-                createOrder={() => {
-                  // Here define the call to create and order
-                  return fetch('https://quickproject-72c0b705df0a.herokuapp.com/userPayments/api/createOrder')
-                    .then((response) => response.json())
-                    .then((order) => order.id)
-                    .catch((err) => {
-                      // Handle any error
-                    });
-                }}
-              >
-                <div className={clsx(styles.payment__inputs, styles.payment__inputs_bottom)}>
+              <div className={clsx(styles.payment__inputs, styles.payment__inputs_bottom)}>
+                <div className={styles.input}>
+                  <label className={clsx(styles.input__label, styles.input__label_noReq)} htmlFor="card-number">
+                    Card Number
+                  </label>
+                  <input id="card-number" onChange={(e) => handleCardNumberChange(e)}  value={cardNumber} placeholder="1234 5678 9101 1121" className={styles.input__item} />
+                </div>
+                <div style={{ marginBottom: 16 }}></div>
+                <div className={styles.payment__inputsRow}>
                   <div className={styles.input}>
-                    <label className={clsx(styles.input__label, styles.input__label_noReq)} htmlFor="card-number">
-                      Card Number
+                    <label className={clsx(styles.input__label, styles.input__label_noReq)} htmlFor="expiration">
+                      Expiration Date
                     </label>
-                    <PayPalHostedField
-                      id="card-number"
-                      hostedFieldType="number"
-                      options={{ selector: '#card-number', placeholder: '1234 5678 9101 1121' }}
-                      className={styles.input__item}
-                    />
+                    <input onChange={(e) => handleExpirationChange(e)} value={expiration} id="expiration-date" placeholder="MM/YY" className={styles.input__item} />
                   </div>
-                  <div style={{ marginBottom: 16 }}></div>
-                  <div className={styles.payment__inputsRow}>
-                    <div className={styles.input}>
-                      <label className={clsx(styles.input__label, styles.input__label_noReq)} htmlFor="expiration">
-                        Expiration Date
-                      </label>
-                      <PayPalHostedField
-                        id="expiration-date"
-                        hostedFieldType="expirationDate"
-                        options={{
-                          selector: '#expiration-date',
-                          placeholder: 'MM/YY',
-                        }}
-                        className={styles.input__item}
-                      />
-                    </div>
-                    <div className={styles.input}>
-                      <label className={clsx(styles.input__label, styles.input__label_noReq)} htmlFor="cvv">
-                        CVV
-                      </label>
-                      <PayPalHostedField id="cvv" hostedFieldType="cvv" options={{ selector: '#cvv', placeholder: '123' }} className={styles.input__item} />
-                    </div>
+                  <div className={styles.input}>
+                    <label className={clsx(styles.input__label, styles.input__label_noReq)} htmlFor="cvv">
+                      CVV
+                    </label>
+                    <input value={cvv} onChange={(e) => handleCVVChange(e)}  id="cvv" placeholder="123" className={styles.input__item} />
                   </div>
                 </div>
-              </PayPalHostedFieldsProvider>
+              </div>
             </>
           )}
         </div>
